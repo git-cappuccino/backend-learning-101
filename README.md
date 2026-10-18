@@ -25,6 +25,7 @@ The goal is durable understanding, not simply completing a syllabus.
 | File | Purpose |
 |---|---|
 | `CLAUDE.md` | Instructions for Claude Code when working in this repository |
+| `PROJECT_INSTRUCTIONS.md` | Version-controlled copy of the Claude Project instructions; after editing, paste it into the Project settings. Must match `backend-learning.md` |
 | `backend-learning.md` | Detailed teaching preferences and learning workflow |
 | `backend-curriculum.md` | Ordered curriculum, technology stack, priorities and milestones |
 | `PROGRESS.md` | Current learning status and evidence of demonstrated skills |
