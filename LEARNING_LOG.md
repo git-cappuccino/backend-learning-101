@@ -24,3 +24,10 @@ Keep entries chronological. Do not rewrite earlier entries merely to make progre
 ## Learning decisions
 
 Record significant curriculum or technology decisions here, including why a change was made and whether it affects future topics.
+
+### 2026-10-18 — Sequential module order (A1 before A2)
+
+- Decision: Complete Module A1 (TS-01 to TS-08) before starting Module A2 (NODE-01 onward).
+- Reason: backend-curriculum.md §6 said "Begin with TS-01 and NODE-01", which conflicted with the module order and with PROGRESS.md ("Follow curriculum order" for NODE-01). Sequential order keeps one module in focus at a time.
+- Effect: NODE-01 starts after TS-08. No topic content or statuses changed.
+- Related setup change: renamed claude.md to CLAUDE.md so Claude Code loads it on case-sensitive filesystems.
