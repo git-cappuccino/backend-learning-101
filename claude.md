@@ -126,7 +126,7 @@ Do not assume that access to a GitHub repository through Claude's web integratio
 
 If working through Claude Code locally, distinguish local file changes from committed changes and pushed changes.
 
-Never place passwords, API keys, access tokens, personal secrets or private company code in this repository.
+Never place passwords, API keys, credentials, access tokens, personal secrets or private company code in this repository.
 
 ## 8. GitHub and Claude Project synchronization
 
