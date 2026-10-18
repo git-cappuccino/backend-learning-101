@@ -14,7 +14,7 @@
 | Topic ID | Topic | Status | Evidence | Weak areas | Next action |
 |---|---|---|---|---|---|
 | TS-01 | Strict TypeScript and type inference | Not started | Not assessed | Not assessed | Begin lesson |
-| NODE-01 | Node.js architecture and browser differences | Not started | Not assessed | Not assessed | Follow curriculum order |
+| NODE-01 | Node.js architecture and browser differences | Not started | Not assessed | Not assessed | Start after TS-08 (A1 complete) |
 
 Continue adding topics using the IDs in backend-curriculum.md.
 

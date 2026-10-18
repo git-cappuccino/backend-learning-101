@@ -530,7 +530,7 @@ Completion of this curriculum indicates a foundation, not mastery of every produ
 
 # 6. Initial execution
 
-Begin with TS-01 and NODE-01.
+Begin with TS-01. Complete Module A1 (TS-01 to TS-08) before starting Module A2 with NODE-01. See the 2026-10-18 entry in LEARNING_LOG.md.
 
 Teach TypeScript and Node.js backend concepts according to backend-learning.md. Start with the mental model, use small examples, and progress through checkpoints rather than teaching the entire module in one response.
 
