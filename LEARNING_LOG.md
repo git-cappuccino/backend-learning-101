@@ -31,3 +31,9 @@ Record significant curriculum or technology decisions here, including why a chan
 - Reason: backend-curriculum.md §6 said "Begin with TS-01 and NODE-01", which conflicted with the module order and with PROGRESS.md ("Follow curriculum order" for NODE-01). Sequential order keeps one module in focus at a time.
 - Effect: NODE-01 starts after TS-08. No topic content or statuses changed.
 - Related setup change: renamed claude.md to CLAUDE.md so Claude Code loads it on case-sensitive filesystems.
+
+### 2026-10-18 — Teaching rules aligned with the Project instructions
+
+- Decision: Keep the long Claude Project instructions (always in context) and make backend-learning.md match them exactly.
+- Changes to backend-learning.md: adopted the 10-step explanation structure; unified the checkpoint format (Covered / Remaining / Next / Understanding check); mapped "Explained" to the In progress status; added the rule to commit and push record updates only after approval; added a rule to keep both sources in sync and flag conflicts.
+- Effect: No curriculum, topic or status changes.
