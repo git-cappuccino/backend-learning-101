@@ -14,6 +14,10 @@ This is a learning repository, not a production application. Prioritize understa
 
 ## 2. Read these files first
 
+The teaching rules are imported here so they are always loaded at startup:
+
+@backend-learning.md
+
 Before beginning substantive curriculum work, inspect:
 
 1. `backend-learning.md` — my teaching preferences, explanation style, pacing and learning workflow.
