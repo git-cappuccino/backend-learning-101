@@ -261,6 +261,8 @@ Use these files as the authoritative learning records:
 - PROGRESS.md: current topic status, demonstrated skills, weak areas and next action.
 - LEARNING_LOG.md: chronological session history.
 
+Use memory (Claude Project memory or Claude Code auto-memory) only for high-level preferences and useful recurring observations. Exact progress, topic statuses and session history belong in PROGRESS.md and LEARNING_LOG.md, never in memory.
+
 At the end of a substantive session, record:
 
 - Topics actually covered.
