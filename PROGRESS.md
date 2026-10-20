@@ -22,11 +22,14 @@ Continue adding topics using the IDs in backend-curriculum.md.
 
 | Milestone | Status | Evidence |
 |---|---|---|
-| Initial TypeScript exercises | Not started | None |
+| Initial TypeScript exercises with unit tests | Not started | None |
 | Minimal Node.js HTTP server | Not started | None |
+| Express API (Modules A3 and B1) | Not started | None |
 | First NestJS API | Not started | None |
 | PostgreSQL integration | Not started | None |
 | Authentication and authorization | Not started | None |
-| Automated tests and deployment | Not started | None |
+| Automated tests and CI/CD | Not started | None |
+| AWS deployment (Module F3) | Not started | None |
+| AI feature in the capstone (Module G4) | Not started | None |
 
 Do not infer completion from this initial setup. Update the tracker using evidence from actual learning and implementation.
