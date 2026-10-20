@@ -31,6 +31,8 @@ The goal is durable understanding, not simply completing a syllabus.
 | `PROGRESS.md` | Current learning status and evidence of demonstrated skills |
 | `LEARNING_LOG.md` | Chronological record of sessions, assessments and decisions |
 | `README.md` | Repository overview and operating instructions |
+| `exercises/` | Exercise workspace: a single npm package (TypeScript + Vitest) for hands-on exercise code |
+| `.nvmrc` | Node.js major version for the exercise workspace (24 LTS) |
 
 ## How the files work together
 
@@ -43,6 +45,29 @@ The goal is durable understanding, not simply completing a syllabus.
 **History:** `LEARNING_LOG.md` preserves previous sessions, mistakes, decisions and next steps.
 
 **Claude Code instructions:** `CLAUDE.md` directs repository-based work and points Claude Code to the other files.
+
+## Exercise workspace
+
+Exercise code lives in `exercises/`, a single npm package tested with Vitest.
+
+Installed versions:
+
+- Node.js 24.18.0
+- npm 11.16.0
+- TypeScript 6.0.3 (pinned exactly)
+- Vitest 5.0.5
+
+Run the type check and tests:
+
+```sh
+cd exercises && npm install && npm run check
+```
+
+While working on an exercise, keep the tests running in watch mode:
+
+```sh
+npm run test:watch
+```
 
 ## How to start a learning session
 
