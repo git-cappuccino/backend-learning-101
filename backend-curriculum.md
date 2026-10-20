@@ -14,16 +14,17 @@ Estimated schedule: approximately 4–5 months for the core learning path and in
 
 - Language: TypeScript
 - Runtime: Node.js
-- Backend framework: NestJS
+- Backend framework: NestJS, after learning Express fundamentals (NestJS runs on Express by default)
 - Database: PostgreSQL
 - Database access: Prisma ORM, with direct SQL skills
 - API style: REST and JSON
-- Validation: NestJS validation tooling and runtime schemas where appropriate
-- Testing: Jest or the testing setup supported by the chosen NestJS version, plus HTTP integration tests
+- Validation: Zod for runtime schemas, used alongside NestJS validation pipes where the framework expects them
+- Testing: Jest or Vitest, starting with the first TypeScript exercises, plus HTTP integration tests. Choose one runner at the first exercise and record the decision
 - Browser-level testing: Playwright where useful
 - Version control: Git and GitHub
 - Local environment: Linux fundamentals and Docker
-- Deployment: one suitable application host and a managed PostgreSQL service
+- Cloud and deployment: AWS (a managed container service and Amazon RDS for PostgreSQL)
+- AI integration: calling LLM APIs from the TypeScript backend (Module G4); the full applied AI curriculum remains a later stage
 - CI/CD: GitHub Actions or an equivalent pipeline
 
 Use current stable, compatible versions and commit dependency lockfiles. Record the selected versions in the repository README.
@@ -55,16 +56,19 @@ Topic IDs:
 - TS-05: `unknown`, `any` and safe external input handling
 - TS-06: Modules, imports and compiler configuration
 - TS-07: DTOs and separation of external and internal types
-- TS-08: Type safety versus runtime validation
+- TS-08: Type safety versus runtime validation (with Zod)
+- TEST-01 (from Module F1, introduced early): Unit-testing basics. Set up the test runner with the first exercise, then write small tests for every later exercise.
 
 Expected outcomes:
 
 - Write strictly typed backend code.
 - Model request and response structures.
 - Understand why TypeScript types do not validate incoming JSON at runtime.
+- Validate untrusted input at runtime with Zod and derive TypeScript types from schemas.
 - Avoid unsafe casts and excessive use of `any`.
+- Write and run basic unit tests for my own code.
 
-Project task: create typed domain models and validated input schemas for projects and tasks.
+Project task: create typed domain models and Zod input schemas for projects and tasks, covered by unit tests.
 
 ## Module A2: Node.js runtime [P0]
 
@@ -87,6 +91,24 @@ Expected outcomes:
 - Build a small HTTP server independently.
 
 Project task: implement a minimal JSON API with a health endpoint and basic error handling without NestJS.
+
+## Module A3: Express fundamentals [P0]
+
+Express is the most widely used Node.js web framework and the default HTTP layer underneath NestJS. Learn it after the built-in HTTP server so the abstraction is clear, and before NestJS so NestJS's additions are clear.
+
+Topic IDs:
+
+- EXP-01: Routing, request and response objects
+- EXP-02: Middleware and the request pipeline
+- EXP-03: Error-handling middleware and async errors
+
+Expected outcomes:
+
+- Explain what Express adds on top of Node's built-in HTTP server.
+- Structure routes and middleware in a small API.
+- Handle synchronous and asynchronous errors consistently.
+
+Project task: rebuild the minimal JSON API with Express and compare it with the built-in HTTP version.
 
 ---
 
@@ -115,7 +137,7 @@ Expected outcomes:
 - Handle invalid requests consistently.
 - Understand the difference between authentication, CORS and server-side authorization.
 
-Project task: build task-management CRUD endpoints with filtering, pagination and documented error responses.
+Project task: build task-management CRUD endpoints in Express with filtering, pagination, Zod validation and documented error responses.
 
 ## Module B2: Backend architecture [P0]
 
@@ -309,7 +331,7 @@ Topic IDs:
 
 - SEC-01: Role-based access control
 - SEC-02: Resource ownership and permissions
-- SEC-03: Multi-tenant isolation
+- SEC-03: Multi-tenant isolation, including PostgreSQL Row-Level Security (RLS)
 - SEC-04: Broken object-level authorization
 - SEC-05: SQL injection and unsafe queries
 - SEC-06: XSS, CSRF and CORS security
@@ -334,7 +356,7 @@ Project task: implement organization-scoped access and tests for unauthorized re
 
 Topic IDs:
 
-- TEST-01: Unit testing
+- TEST-01: Unit testing (introduced in Module A1; revisit here for services, mocks and coverage)
 - TEST-02: Integration testing
 - TEST-03: HTTP end-to-end testing
 - TEST-04: Test databases and fixtures
@@ -371,7 +393,7 @@ Expected outcomes:
 
 Project task: configure a CI pipeline that runs checks before a change can be merged.
 
-## Module F3: Linux, Docker and deployment [P0/P1]
+## Module F3: Linux, Docker and deployment on AWS [P0/P1]
 
 Topic IDs:
 
@@ -385,13 +407,23 @@ Topic IDs:
 - OPS-08: Database migrations during release
 - OPS-09: Health checks and graceful shutdown
 
+AWS essentials (the 80/20 of AWS for a backend developer):
+
+- AWS-01: Account setup, billing alerts, IAM and least privilege
+- AWS-02: Running a container on a managed service (ECS on Fargate or App Runner)
+- AWS-03: Amazon RDS for PostgreSQL: setup, networking and backups
+- AWS-04: S3 object storage fundamentals
+- AWS-05: Secrets Manager or Parameter Store for configuration
+- AWS-06: CloudWatch logs and basic alarms
+
 Expected outcomes:
 
 - Run the application consistently in local and deployed environments.
 - Diagnose configuration and connectivity issues.
 - Deploy a new version without treating deployment as a manual mystery.
+- Deploy to AWS with least-privilege access and controlled costs.
 
-Project task: containerize the application, deploy it and document the release process.
+Project task: containerize the application, deploy it to AWS with RDS PostgreSQL and document the release process. Set up billing alerts before creating any resources.
 
 ## Module F4: Observability and reliability [P1]
 
@@ -456,6 +488,24 @@ Expected outcomes:
 - Explain common scalability trade-offs.
 - Design a reasonable service without overengineering it.
 
+## Module G4: LLM API integration in TypeScript [P1]
+
+Many current full-stack and backend roles expect developers to add AI features to production systems. This module teaches that as backend engineering in the existing TypeScript stack. Python and the full applied AI curriculum remain the later stage.
+
+- LLM-01: Calling a model API from the backend, keeping API keys server-side
+- LLM-02: Structured output and validating model responses with Zod
+- LLM-03: Streaming responses to clients (practical Server-Sent Events)
+- LLM-04: Timeouts, retries, rate limits and cost control
+- LLM-05: Guardrails: permissions, prompt-injection awareness and fallbacks
+
+Expected outcomes:
+
+- Treat an LLM API as an unreliable, costly external dependency and handle it accordingly.
+- Never trust model output without validation.
+- Keep AI features within existing authorization rules.
+
+Project task: add one AI feature to the capstone (for example, summarizing a project's tasks) with validated output, timeouts, cost limits and tests that mock the model API.
+
 ---
 
 # PHASE H — Optional skills based on job evidence
@@ -467,7 +517,7 @@ These topics should not block completion of the core curriculum:
 - Object storage and signed upload URLs
 - GraphQL
 - Search engines
-- Cloud-specific managed services
+- Cloud services beyond the AWS essentials in Module F3
 - Microservices
 - Kafka and distributed event streaming
 - Kubernetes
@@ -493,9 +543,10 @@ Progressive milestones:
 5. Transactions and concurrent updates.
 6. Automated testing.
 7. Docker and CI/CD.
-8. Deployment, logging and error diagnosis.
+8. Deployment to AWS, logging and error diagnosis.
 9. Caching and background processing.
 10. Performance measurements and documentation.
+11. One production-quality AI feature (Module G4).
 
 Later AI extension:
 
@@ -530,7 +581,7 @@ Completion of this curriculum indicates a foundation, not mastery of every produ
 
 # 6. Initial execution
 
-Begin with TS-01. Complete Module A1 (TS-01 to TS-08) before starting Module A2 with NODE-01. See the 2026-10-18 entry in LEARNING_LOG.md.
+Begin with TS-01. Complete Module A1 (TS-01 to TS-08, with TEST-01 introduced alongside the first exercises) before starting Module A2 with NODE-01. See the 2026-10-18 entry in LEARNING_LOG.md.
 
 Teach TypeScript and Node.js backend concepts according to backend-learning.md. Start with the mental model, use small examples, and progress through checkpoints rather than teaching the entire module in one response.
 
