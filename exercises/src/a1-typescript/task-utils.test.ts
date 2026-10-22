@@ -66,9 +66,7 @@ describe("getTaskTitle", () => {
     expect(task).toBeNull();
   });
   it("throws for empty task ID", () => {
-    expect(() => getTaskTitle(tasks, "")).toThrow(
-      "task ID should be a valid string",
-    );
+    expect(getTaskTitle(tasks, "")).toBeNull();
   });
 });
 

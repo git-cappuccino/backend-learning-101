@@ -28,9 +28,6 @@ export const createTask = (id: string, title: string): Task => {
 };
 
 export const getTaskTitle = (tasks: Task[], id: string): string | null => {
-  if (!id) {
-    throw new Error("task ID should be a valid string");
-  }
   const taskToFetch = tasks.find((task) => task.id === id);
   if (!taskToFetch) {
     return null;
