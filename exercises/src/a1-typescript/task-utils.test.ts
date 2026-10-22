@@ -4,7 +4,7 @@ import {
   getAssigneeLabel,
   getFirstTaskTitle,
   getTaskTitle,
-  Task,
+  type Task,
   totalEstimateHours,
 } from "./task-utils.js";
 
