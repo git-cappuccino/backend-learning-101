@@ -65,7 +65,7 @@ describe("getTaskTitle", () => {
     const task = getTaskTitle(tasks, taskId);
     expect(task).toBeNull();
   });
-  it("throws for empty task ID", () => {
+  it("returns null for an empty task ID", () => {
     expect(getTaskTitle(tasks, "")).toBeNull();
   });
 });
