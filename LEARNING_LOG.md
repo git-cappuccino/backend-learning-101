@@ -4,7 +4,29 @@
 
 ## Session history
 
-No learning sessions recorded yet.
+### 2026-10-20 to 2026-10-22 — Session 1: TS-01 (with TEST-01 basics)
+
+- Topics: TS-01 (all three checkpoints), TEST-01 introduction.
+- Concepts understood:
+  - Type erasure: TypeScript checks code, not runtime data.
+  - What `strict` enables, plus `noUncheckedIndexedAccess`.
+  - Why `!` and `as` hide bugs.
+  - Inference: annotate at boundaries, infer inside.
+  - Widening and `as const`, and explicit return types on exported functions.
+  - How `any` from `JSON.parse` spreads through inference.
+  - tsc vs Vitest as separate checks.
+- Practical work: Exercise 1, task-utils (5 functions, 12 tests). Review rounds: 5b6d70f → 5571e4e → 0780b2d → 556f224.
+- Review findings, all fixed:
+  - A lookup threw despite declaring `string | null`.
+  - A display label was stored in the data defaults (`TASK_DEFAULTS.assigneeId: "Unassigned"`).
+  - A type-only import was written as a value import.
+  - A test name was stale after the behaviour changed.
+- Assessment: understanding checks on checkpoints 1, 2 and 3 answered correctly, with minor precision notes.
+- Misconceptions:
+  - Proposed try/catch at every call site to avoid 500s. Corrected: let errors propagate to a central handler, and catch only where the code can recover.
+  - Did not yet explain why a plain `Error` cannot map to a 400 (it needs a typed error class).
+- Not verified by the reviewer: tests were not run in the review environment, because the npm registry was unreachable there. Test result as reported by the learner on 2026-10-22: `npm run check` passed, typecheck clean, 2 test files, 13/13 tests passed.
+- Next checkpoint: TS-02, checkpoint 1.
 
 ## Recording rules
 
@@ -48,3 +70,10 @@ Record significant curriculum or technology decisions here, including why a chan
 - Named Zod for runtime validation (TS-08, stack, Phase B project) and added PostgreSQL Row-Level Security to SEC-03.
 - Not changed yet: the 4–5 month estimate (likely optimistic), labelling overlapping topics as revisits, optional MongoDB awareness and a job-search track.
 - Effect: TS-01 remains the first topic. No statuses changed.
+
+### 2026-10-20 — Exercise workspace, test runner and versions
+
+- Decision: Exercise code lives in `exercises/`, one npm package in this repo. The capstone gets its own repository later.
+- Decision: Vitest as the test runner. NestJS now generates new projects with Vitest by default, and Vitest runs TypeScript and ESM without ts-jest or Babel. Jest syntax will be compared when we reach mocking.
+- Decision: Node.js 24 LTS (24.18.0) and TypeScript 6.0.3 (pinned exactly), not 7.0. TS 7.0 has no stable programmatic API until 7.1, and typescript-eslint support for 7.x is expected around Q1 2027. Revisit in 2027. Moving to Node 26 LTS is also deferred to a natural break.
+- Setup commit: d3548ed. tsconfig: strict + noUncheckedIndexedAccess, module nodenext, noEmit. Scripts: test, test:watch, typecheck, check.
