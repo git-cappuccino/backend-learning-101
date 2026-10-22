@@ -10,8 +10,9 @@ export interface Task {
 
 export const TASK_DEFAULTS = {
   status: "todo",
-  assigneeId: "Unassigned",
 } as const;
+
+const UNASSIGNED = "Unassigned";
 
 export const createTask = (id: string, title: string): Task => {
   const taskId = id.trim();
@@ -27,11 +28,10 @@ export const createTask = (id: string, title: string): Task => {
 };
 
 export const getTaskTitle = (tasks: Task[], id: string): string | null => {
-  const taskId = id.trim();
-  if (!taskId) {
+  if (!id) {
     throw new Error("task ID should be a valid string");
   }
-  const taskToFetch = tasks.find((task) => task.id === taskId);
+  const taskToFetch = tasks.find((task) => task.id === id);
   if (!taskToFetch) {
     return null;
   }
@@ -40,7 +40,7 @@ export const getTaskTitle = (tasks: Task[], id: string): string | null => {
 
 export const getAssigneeLabel = (task: Task): string => {
   if (!task.assigneeId) {
-    return TASK_DEFAULTS.assigneeId;
+    return UNASSIGNED;
   }
   return `Assigned to ${task.assigneeId}`;
 };
