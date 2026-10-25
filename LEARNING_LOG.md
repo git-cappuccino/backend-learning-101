@@ -28,6 +28,37 @@
 - Not verified by the reviewer: tests were not run in the review environment, because the npm registry was unreachable there. Test result as reported by the learner on 2026-10-22: `npm run check` passed, typecheck clean, 2 test files, 13/13 tests passed.
 - Next checkpoint: TS-02, checkpoint 1.
 
+### 2026-10-23 to 2026-10-25 — Session 2: TS-02 checkpoint 1 (with TEST-01 practice)
+
+- Topics: TS-02 checkpoint 1, TEST-01 practice.
+- Concepts understood:
+  - Interface vs type alias vs class. Only a class exists at runtime and can be checked with `instanceof`.
+  - `extends` reports conflicts where they are made, while `&` can silently produce `never`. Declaration merging. Convention: `interface` for object shapes, `type` for everything else.
+  - Custom error hierarchy (`AppError` → `ValidationError`, `NotFoundError`, `ConflictError`) with `name`, `cause`, `statusCode` and a stable `code`.
+  - A central `toErrorResponse(err: unknown)` that classifies only with `instanceof AppError` and fails closed with a generic 500.
+  - `as` turns off checking. Class types are structural at compile time, but `instanceof` checks how an object was constructed.
+  - Return `null` when absence is a normal result; throw when the operation cannot continue. An empty collection is 200 with `[]`, while a missing single resource is 404. Next.js `notFound()` uses the same throw pattern.
+  - `in` checks property keys, not array values.
+- Practical work: Exercise 2, typed errors. Review rounds: e9f55d1 → cbe57d6 → a834239.
+- Review findings, all fixed:
+  - Assertions that could never fail (on the handler's response object and on test input data), plus duplicated hierarchy assertions.
+  - Public types (`ErrorCode`, `ErrorResponse`, `ErrorResponseBody`) were not exported.
+  - `I` prefix on interfaces, inconsistent with `Task`.
+  - The `cause` test used a string instead of an `Error`.
+- Assessment:
+  - Check 1 (teammate's duck-typed `HttpError` handler): part (a) mostly correct; part (b) gave a valid status/code pairing point instead of the intended false-positive case, which was explained with a Stripe 401 example.
+  - Check 2 (plain object thrown, `instanceof` handler): all three parts correct.
+  - Reflection on `getTaskTitle` vs `getTaskOrThrow`: correct.
+  - Check 3 (which bug each `toErrorResponse` test catches): part 2 correct; part 1's example would neither compile nor be caught.
+  - Check 4 (predicting `in` results): all correct.
+- Misconceptions:
+  - Claimed a duck-typed handler would crash on missing fields. Corrected: it produces a silently broken contract; only `throw null` crashes the handler.
+  - Used `err.code in [...]` as a value-membership check. Corrected: `in` checks keys, `.includes()` checks values, and `unknown` blocks the property access anyway.
+- Self-initiated improvements: added a trimming test and fixed a stale `getAssigneeLabel` test name without being asked.
+- Deferred by design: putting `statusCode` on domain errors couples the domain to HTTP. Revisit in ARCH-04 (domain logic versus transport logic). Server-side logging of unknown errors is deferred to ARCH-08.
+- Not verified by the reviewer: Vitest was not run in the review environment (Node 22, and the dependency install failed). The reviewer type-checked `errors.ts` and `task-utils.ts` with TypeScript 6.0.3 and ran a runtime probe of `createTask`, `getTaskOrThrow` and `toErrorResponse`. Learner reported `npm run check` passed for e9f55d1; it was not re-reported for cbe57d6 or a834239.
+- Next checkpoint: TS-02, checkpoint 2 (union types in depth).
+
 ## Recording rules
 
 For each substantive session, record:
