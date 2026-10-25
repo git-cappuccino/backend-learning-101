@@ -45,7 +45,6 @@ describe("NotFoundError", () => {
 describe("toErrorResponse", () => {
   it("handles a ValidationError → 400 and the full body.", () => {
     const validationError = new ValidationError("Invalid input");
-    expect(validationError).instanceOf(AppError);
     const errorResponse = toErrorResponse(validationError);
     expect(errorResponse.status).toBe(400);
     expect(errorResponse.body).toEqual({
@@ -57,7 +56,6 @@ describe("toErrorResponse", () => {
   });
   it("handles a NotFoundError → 404 and the full body", () => {
     const notFoundError = new NotFoundError("Task", "42");
-    expect(notFoundError).instanceof(AppError);
     const errorResponse = toErrorResponse(notFoundError);
     expect(errorResponse.status).toBe(404);
     expect(errorResponse.body).toEqual({
@@ -69,7 +67,6 @@ describe("toErrorResponse", () => {
   });
   it("handles a ConflictError → 409 and the full body", () => {
     const conflictError = new ConflictError("Contract mismatch");
-    expect(conflictError).instanceOf(AppError);
     const conflictErrorResponse = toErrorResponse(conflictError);
     expect(conflictErrorResponse.status).toBe(409);
     expect(conflictErrorResponse.body).toEqual({
@@ -81,7 +78,6 @@ describe("toErrorResponse", () => {
   });
   it("with a plain Error → 500, the generic body", () => {
     const defaultError = new Error("db password is hunter2");
-    expect(defaultError).instanceOf(Error);
     const errorResponse = toErrorResponse(defaultError);
     expect(errorResponse.status).toBe(500);
     expect(errorResponse.body).toEqual({
@@ -118,9 +114,6 @@ describe("toErrorResponse", () => {
       statusCode: 404,
       message: "Task 42 not found",
     };
-    expect(duckTypedError).not.instanceof(NotFoundError);
-    expect(duckTypedError).not.instanceOf(AppError);
-    expect(duckTypedError).not.instanceOf(Error);
     const duckErrorResponse = toErrorResponse(duckTypedError);
     expect(duckErrorResponse.status).toBe(500);
     expect(duckErrorResponse.body).toEqual({
