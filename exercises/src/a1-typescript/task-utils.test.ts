@@ -3,10 +3,12 @@ import {
   createTask,
   getAssigneeLabel,
   getFirstTaskTitle,
+  getTaskOrThrow,
   getTaskTitle,
   type Task,
   totalEstimateHours,
 } from "./task-utils.js";
+import { NotFoundError, ValidationError } from "./errors.js";
 
 describe("createTask", () => {
   it("returns a task when id and title are present", () => {
@@ -22,14 +24,36 @@ describe("createTask", () => {
       status: "todo",
     });
   });
+  it("throws for empty task ID when both id and title are empty", () => {
+    expect(() => createTask("", "")).toThrow(ValidationError);
+    expect(() => createTask("", "")).toThrow("Task ID cannot be blank");
+  });
   it("throws for empty task ID", () => {
-    expect(() => createTask("", "valid title")).toThrow(
-      "Task ID/Title cannot be blank",
+    expect(() => createTask("", "Valid title")).toThrow(ValidationError);
+    expect(() => createTask("", "Valid title")).toThrow(
+      "Task ID cannot be blank",
     );
   });
+  it("trims the inputs before processing", () => {
+    const taskFnWhiteSpaceId = () => createTask(" ", "Valid title");
+    expect(taskFnWhiteSpaceId).toThrow(ValidationError);
+    expect(taskFnWhiteSpaceId).toThrow("Task ID cannot be blank");
+
+    const taskFnWhiteSpaceTitle = () => createTask("TS-01", "  ");
+    expect(taskFnWhiteSpaceTitle).toThrow(ValidationError);
+    expect(taskFnWhiteSpaceTitle).toThrow("Task title cannot be blank");
+
+    const taskTS01 = createTask(" TS-01 ", " Learn TS fundamentals   ");
+    expect(taskTS01).toEqual({
+      id: "TS-01",
+      title: "Learn TS fundamentals",
+      status: "todo",
+    });
+  });
   it("throws for an empty task title", () => {
+    expect(() => createTask("valid id", "")).toThrow(ValidationError);
     expect(() => createTask("valid id", "")).toThrow(
-      "Task ID/Title cannot be blank",
+      "Task title cannot be blank",
     );
   });
 });
@@ -70,8 +94,43 @@ describe("getTaskTitle", () => {
   });
 });
 
+describe("getTaskOrThrow", () => {
+  const tasks: Task[] = [
+    {
+      id: "TS-01",
+      status: "in_progress",
+      title: "Learn chapter 01 in TS",
+      estimateHours: 10,
+    },
+    {
+      id: "TS-02",
+      status: "todo",
+      title: "Chapter 02 for interfaces",
+    },
+    {
+      id: "NS-01",
+      status: "todo",
+      title: "Node JS by Claude",
+      estimateHours: 20,
+    },
+  ];
+  it("throws when the id doesn't match any task", () => {
+    const taskFn = () => getTaskOrThrow(tasks, "PG-01");
+    expect(taskFn).toThrow(NotFoundError);
+    expect(taskFn).toThrow("Task PG-01 not found");
+  });
+  it("returns the task when the id matches", () => {
+    const task02 = getTaskOrThrow(tasks, "TS-02");
+    expect(task02).toEqual({
+      id: "TS-02",
+      status: "todo",
+      title: "Chapter 02 for interfaces",
+    });
+  });
+});
+
 describe("getAssigneeLabel", () => {
-  it("returns default Assignee ID when task doesn't have one", () => {
+  it("returns Unassigned when task doesn't have one", () => {
     const task: Task = {
       id: "TS-01",
       status: "in_progress",
