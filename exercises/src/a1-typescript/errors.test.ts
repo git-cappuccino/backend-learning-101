@@ -21,8 +21,9 @@ describe("ValidationError", () => {
     expect(error.code).toBe("VALIDATION_FAILED");
   });
   it("persists the cause when passed", () => {
-    const error = new ValidationError("Invalid date", { cause: "original" });
-    expect(error.cause).toBe("original");
+    const original = new Error("parse failed");
+    const error = new ValidationError("Invalid date", { cause: original });
+    expect(error.cause).toBe(original);
   });
 });
 
@@ -90,10 +91,8 @@ describe("toErrorResponse", () => {
       },
     });
   });
-  it("accepts a non Error and handles response properly", () => {
+  it("returns a generic 500 when a string is thrown", () => {
     const stringErrorResponse = toErrorResponse("Transaction failed");
-    expect(stringErrorResponse).not.instanceOf(Error);
-    expect(stringErrorResponse).not.instanceOf(AppError);
     expect(stringErrorResponse.status).toBe(500);
     expect(stringErrorResponse.body).toEqual({
       error: {
@@ -101,10 +100,9 @@ describe("toErrorResponse", () => {
         message: "Something went Wrong!",
       },
     });
-
+  });
+  it("returns a generic 500 when a null is thrown", () => {
     const nullErrorResponse = toErrorResponse(null);
-    expect(nullErrorResponse).not.instanceof(Error);
-    expect(nullErrorResponse).not.instanceOf(AppError);
     expect(nullErrorResponse.status).toBe(500);
     expect(nullErrorResponse.body).toEqual({
       error: {

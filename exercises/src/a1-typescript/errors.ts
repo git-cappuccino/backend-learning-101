@@ -1,16 +1,16 @@
-type ErrorCode =
+export type ErrorCode =
   | "CONFLICT"
   | "VALIDATION_FAILED"
   | "RESOURCE_NOT_FOUND"
   | "INTERNAL_SERVER_ERROR";
 
-interface IErrorResponseBody {
+export interface ErrorResponseBody {
   error: { code: ErrorCode; message: string };
 }
 
-interface IErrorResponse {
+export interface ErrorResponse {
   status: number;
-  body: IErrorResponseBody;
+  body: ErrorResponseBody;
 }
 
 export class AppError extends Error {
@@ -51,7 +51,7 @@ export class ConflictError extends AppError {
   }
 }
 
-export const toErrorResponse = (err: unknown): IErrorResponse => {
+export const toErrorResponse = (err: unknown): ErrorResponse => {
   if (err instanceof AppError) {
     return {
       status: err.statusCode,
