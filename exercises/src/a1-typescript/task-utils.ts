@@ -1,3 +1,5 @@
+import { NotFoundError, ValidationError } from "./errors.js";
+
 export type TaskStatus = "todo" | "in_progress" | "done";
 
 export interface Task {
@@ -17,14 +19,25 @@ const UNASSIGNED = "Unassigned";
 export const createTask = (id: string, title: string): Task => {
   const taskId = id.trim();
   const taskTitle = title.trim();
-  if (!taskId || !taskTitle) {
-    throw new Error("Task ID/Title cannot be blank");
+  if (!taskId) {
+    throw new ValidationError("Task ID cannot be blank");
+  }
+  if (!taskTitle) {
+    throw new ValidationError("Task title cannot be blank");
   }
   return {
     id: taskId,
     title: taskTitle,
     status: TASK_DEFAULTS.status,
   };
+};
+
+export const getTaskOrThrow = (tasks: Task[], id: string): Task => {
+  const taskToFetch = tasks.find((task) => task.id === id);
+  if (!taskToFetch) {
+    throw new NotFoundError("Task", id);
+  }
+  return taskToFetch;
 };
 
 export const getTaskTitle = (tasks: Task[], id: string): string | null => {
