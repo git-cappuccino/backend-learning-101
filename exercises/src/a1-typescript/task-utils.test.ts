@@ -241,11 +241,13 @@ describe("parseStatus", () => {
     expect(parseStatusFn).toThrow("todo");
     expect(parseStatusFn).toThrow("in_progress");
     expect(parseStatusFn).toThrow("done");
+    expect(parseStatusFn).toThrow("blocked");
   });
   it("parses every valid status without throwing", () => {
     expect(parseStatus("todo")).toBe("todo");
     expect(parseStatus("in_progress")).toBe("in_progress");
     expect(parseStatus("done")).toBe("done");
+    expect(parseStatus("blocked")).toBe("blocked");
   });
 });
 
@@ -254,6 +256,11 @@ describe("changeStatus", () => {
     id: "TS-03",
     status: "todo",
     title: "Type guards in TS",
+  };
+  const blockedTask: Task = {
+    id: "TS-04",
+    status: "blocked",
+    title: "Generic Types in TS",
   };
   const inProgressTask: Task = {
     id: "TS-02",
@@ -281,6 +288,16 @@ describe("changeStatus", () => {
     const updatedTask = changeStatus(todoTask, "in_progress");
     expect(updatedTask.status).toBe("in_progress");
     expect(todoTask.status).toBe("todo");
+  });
+  it("allows changing the status of task from todo to blocked keeping original task unchanged", () => {
+    const updatedTask = changeStatus(todoTask, "blocked");
+    expect(updatedTask.status).toBe("blocked");
+    expect(todoTask.status).toBe("todo");
+  });
+  it("allows changing the status of task from blocked to in_progress keeping original task unchanged", () => {
+    const updatedTask = changeStatus(blockedTask, "in_progress");
+    expect(updatedTask.status).toBe("in_progress");
+    expect(blockedTask.status).toBe("blocked");
   });
   it("allows changing the status of task from in_progress to todo keeping original task unchanged", () => {
     const updatedTask = changeStatus(inProgressTask, "todo");

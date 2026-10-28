@@ -126,7 +126,7 @@ describe("toErrorResponse", () => {
   it("handles the ValidationError thrown by parseStatus function with 400", () => {
     const response = toErrorResponse(
       new ValidationError(
-        `Invalid status "Invalid". Allowed: todo, in_progress, done`,
+        `Invalid status "Invalid". Allowed: todo, in_progress, done, blocked`,
       ),
     );
     expect(response).toEqual({
@@ -134,7 +134,7 @@ describe("toErrorResponse", () => {
       body: {
         error: {
           code: "VALIDATION_FAILED",
-          message: `Invalid status "Invalid". Allowed: todo, in_progress, done`,
+          message: `Invalid status "Invalid". Allowed: todo, in_progress, done, blocked`,
         },
       },
     });

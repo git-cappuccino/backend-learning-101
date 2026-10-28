@@ -1,6 +1,6 @@
 import { ConflictError, NotFoundError, ValidationError } from "./errors.js";
 
-export const TASK_STATUSES = ["todo", "in_progress", "done"] as const;
+export const TASK_STATUSES = ["todo", "in_progress", "done", "blocked"] as const;
 export type TaskStatus = (typeof TASK_STATUSES)[number];
 export interface Task {
   id: string;
@@ -17,7 +17,8 @@ export const TASK_DEFAULTS = {
 const UNASSIGNED = "Unassigned";
 
 export const ALLOWED_TRANSITIONS: Record<TaskStatus, readonly TaskStatus[]> = {
-  todo: ["in_progress"],
+  todo: ["in_progress", "blocked"],
+  blocked: ["in_progress"],
   in_progress: ["todo", "done"],
   done: ["todo"], // reopen
 };
