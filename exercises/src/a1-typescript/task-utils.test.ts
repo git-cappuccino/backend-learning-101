@@ -1,14 +1,17 @@
 import { describe, expect, it } from "vitest";
 import {
+  changeStatus,
   createTask,
   getAssigneeLabel,
   getFirstTaskTitle,
   getTaskOrThrow,
   getTaskTitle,
+  parseStatus,
   type Task,
+  TASK_STATUSES,
   totalEstimateHours,
 } from "./task-utils.js";
-import { NotFoundError, ValidationError } from "./errors.js";
+import { ConflictError, NotFoundError, ValidationError } from "./errors.js";
 
 describe("createTask", () => {
   it("returns a task when id and title are present", () => {
@@ -209,5 +212,89 @@ describe("getFirstTaskTitle", () => {
     ];
     const firstTaskTitle = getFirstTaskTitle(tasks);
     expect(firstTaskTitle).toBe("Learn chapter 01 in TS");
+  });
+});
+
+describe("parseStatus", () => {
+  it("throws for empty strings", () => {
+    const parseStatusFn = () => parseStatus("");
+    expect(parseStatusFn).toThrow(
+      `Invalid status "". Allowed: todo, in_progress, done`,
+    );
+  });
+  it("throws for whitespaces", () => {
+    const parseStatusFn = () => parseStatus("  ");
+    expect(parseStatusFn).toThrow(
+      `Invalid status "  ". Allowed: todo, in_progress, done`,
+    );
+  });
+  it("throws for case insensitive input", () => {
+    const parseStatusFn = () => parseStatus("Todo");
+    expect(parseStatusFn).toThrow(
+      `Invalid status "Todo". Allowed: todo, in_progress, done`,
+    );
+  });
+  it("error message contains every valid status for invalid inputs", () => {
+    // unknown input case is covered here
+    const parseStatusFn = () => parseStatus("Invalid");
+    expect(parseStatusFn).toThrow(ValidationError);
+    expect(parseStatusFn).toThrow("todo");
+    expect(parseStatusFn).toThrow("in_progress");
+    expect(parseStatusFn).toThrow("done");
+  });
+  it("parses every valid status without throwing", () => {
+    expect(parseStatus("todo")).toBe("todo");
+    expect(parseStatus("in_progress")).toBe("in_progress");
+    expect(parseStatus("done")).toBe("done");
+  });
+});
+
+describe("changeStatus", () => {
+  const todoTask: Task = {
+    id: "TS-03",
+    status: "todo",
+    title: "Type guards in TS",
+  };
+  const inProgressTask: Task = {
+    id: "TS-02",
+    status: "in_progress",
+    title: "Unions in depth",
+  };
+  const completedTask: Task = {
+    id: "TS-01",
+    status: "done",
+    title: "interfaces and inheritance",
+  };
+
+  it("rejects changing the status of task to the same value", () => {
+    let changeStatusFn = () => changeStatus(todoTask, "todo");
+    expect(changeStatusFn).toThrow(ConflictError);
+    expect(changeStatusFn).toThrow(`Cannot change status from todo to todo`);
+
+    changeStatusFn = () => changeStatus(inProgressTask, "in_progress");
+    expect(changeStatusFn).toThrow(ConflictError);
+    expect(changeStatusFn).toThrow(
+      `Cannot change status from in_progress to in_progress`,
+    );
+  });
+  it("allows changing the status of task from todo to in_progress keeping original task unchanged", () => {
+    const updatedTask = changeStatus(todoTask, "in_progress");
+    expect(updatedTask.status).toBe("in_progress");
+    expect(todoTask.status).toBe("todo");
+  });
+  it("allows changing the status of task from in_progress to todo keeping original task unchanged", () => {
+    const updatedTask = changeStatus(inProgressTask, "todo");
+    expect(updatedTask.status).toBe("todo");
+    expect(inProgressTask.status).toBe("in_progress");
+  });
+  it("allows changing the status of task from in_progress to done keeping original task unchanged", () => {
+    const updatedTask = changeStatus(inProgressTask, "done");
+    expect(updatedTask.status).toBe("done");
+    expect(inProgressTask.status).toBe("in_progress");
+  });
+  it("allows changing the status of task from done to todo keeping original task unchanged", () => {
+    const updatedTask = changeStatus(completedTask, "todo");
+    expect(updatedTask.status).toBe("todo");
+    expect(completedTask.status).toBe("done");
   });
 });

@@ -1,7 +1,7 @@
-import { NotFoundError, ValidationError } from "./errors.js";
+import { ConflictError, NotFoundError, ValidationError } from "./errors.js";
 
-export type TaskStatus = "todo" | "in_progress" | "done";
-
+export const TASK_STATUSES = ["todo", "in_progress", "done"] as const;
+export type TaskStatus = (typeof TASK_STATUSES)[number];
 export interface Task {
   id: string;
   title: string;
@@ -15,6 +15,35 @@ export const TASK_DEFAULTS = {
 } as const;
 
 const UNASSIGNED = "Unassigned";
+
+export const ALLOWED_TRANSITIONS: Record<TaskStatus, readonly TaskStatus[]> = {
+  todo: ["in_progress"],
+  in_progress: ["todo", "done"],
+  done: ["todo"], // reopen
+};
+
+export const changeStatus = (task: Task, next: TaskStatus): Task => {
+  const existingStatus = task.status;
+  const canTransition = ALLOWED_TRANSITIONS[existingStatus].includes(next);
+  if (!canTransition) {
+    throw new ConflictError(
+      `Cannot change status from ${existingStatus} to ${next}`,
+    );
+  }
+  const newTask = { ...task };
+  newTask.status = next;
+  return newTask;
+};
+
+export const parseStatus = (input: string): TaskStatus => {
+  if (!(TASK_STATUSES as readonly string[]).includes(input)) {
+    throw new ValidationError(
+      `Invalid status "${input}". Allowed: ${TASK_STATUSES.join(", ")}`,
+    );
+  }
+  // TODO(TS-03): replace with a type guard
+  return input as TaskStatus;
+};
 
 export const createTask = (id: string, title: string): Task => {
   const taskId = id.trim();

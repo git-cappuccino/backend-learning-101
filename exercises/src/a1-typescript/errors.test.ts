@@ -123,4 +123,34 @@ describe("toErrorResponse", () => {
       },
     });
   });
+  it("handles the ValidationError thrown by parseStatus function with 400", () => {
+    const response = toErrorResponse(
+      new ValidationError(
+        `Invalid status "Invalid". Allowed: todo, in_progress, done`,
+      ),
+    );
+    expect(response).toEqual({
+      status: 400,
+      body: {
+        error: {
+          code: "VALIDATION_FAILED",
+          message: `Invalid status "Invalid". Allowed: todo, in_progress, done`,
+        },
+      },
+    });
+  });
+  it("handles the ConflictError thrown by changeStatus function with 409", () => {
+    const response = toErrorResponse(
+      new ConflictError(`Cannot change status from in_progress to in_progress`),
+    );
+    expect(response).toEqual({
+      status: 409,
+      body: {
+        error: {
+          code: "CONFLICT",
+          message: `Cannot change status from in_progress to in_progress`,
+        },
+      },
+    });
+  });
 });
