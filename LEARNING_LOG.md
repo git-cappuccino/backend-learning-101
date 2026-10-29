@@ -59,6 +59,32 @@
 - Not verified by the reviewer: Vitest was not run in the review environment (Node 22, and the dependency install failed). The reviewer type-checked `errors.ts` and `task-utils.ts` with TypeScript 6.0.3 and ran a runtime probe of `createTask`, `getTaskOrThrow` and `toErrorResponse`. Learner reported `npm run check` passed for e9f55d1; it was not re-reported for cbe57d6 or a834239.
 - Next checkpoint: TS-02, checkpoint 2 (union types in depth).
 
+### 2026-10-26 to 2026-10-29 — Session 3: TS-02 checkpoint 2 and Exercise 3 (with TEST-01 practice)
+
+- Topics: TS-02 checkpoint 2 (TS-02 now Verified), TEST-01 practice.
+- Concepts understood:
+  - A type is a set of values; a literal union is a closed set. Assignability goes subset → superset, and a widened `string` is not assignable to a literal union.
+  - Only members common to every union member are usable without narrowing.
+  - Unions are erased at runtime. Write the list once as an `as const` array and derive the type with `(typeof X)[number]`, so the type, validation and error messages cannot drift apart.
+  - `in` checks keys; `.includes()` on a readonly tuple rejects a plain `string`; widening with `as readonly string[]` is the safe direction of `as`, while `input as TaskStatus` is a claim the compiler cannot check.
+  - `Record<Union, V>` forces every key to be present (missing and extra keys both fail) but cannot check that the values are correct; business rules need tests.
+  - Type errors do not stop Node or Vitest from running the code; only `tsc` enforces types.
+- Practical work: Exercise 3, task status as a single source of truth. Commits 327715f (Parts 1–2) → 59b51d1 (`blocked` added) → f830ee5 → 7147336 → 6018ea3.
+- Review findings:
+  - Fixed: the first stretch attempt (327715f) built errors by hand and re-tested `toErrorResponse`; 7147336 calls the real `parseStatus` and `changeStatus`. The valid-status test now loops over `TASK_STATUSES`. `changeStatus` uses `{ ...task, status: next }`.
+  - Not fixed by choice: `done → todo` instead of the specified `done → in_progress`; tests encode the implementation. The 400 response test still hardcodes the allowed-status list. No rejection tests involve `blocked` or `done`.
+- Assessment:
+  - Checkpoint 2 check (teammate's `parseStatus` PR): part 1 correct; part 2 diagnosis correct (two drifting sources of truth) but predicted a 500 where the code returns a 400 `VALIDATION_FAILED`; part 3 correct, including the `readonly string[]` fix.
+  - Follow-up check (reverse drift): step 1 correct; steps 2–3 wrong because the scenario was misread (assumed a `blocked` label existed). After running a probe: correctly identified the divergence and the two lines that derive the type, and predicted the TS2741 error; missed the second error on `.includes()`.
+  - Exercise 3 question: correctly explained that `Record` forces keys but not values, and that tests must catch missing transitions.
+  - TEST-01 check (where test expectations come from): part 1 answered: the expected values were taken from `ALLOWED_TRANSITIONS`, not the spec table. Part 2 not answered; the learner asked for the answer: a spec-first test `done → in_progress` would have failed with `ConflictError: Cannot change status from done to in_progress`. Recorded as explained, not demonstrated.
+- Misconceptions:
+  - Called a `Record<…>` annotation "type narrowing". Corrected: narrowing is a runtime check that lets the compiler pick a union member (TS-03).
+  - Described tests as "runtime assertions". Corrected: the `if`/`throw` is the runtime check; tests run before deployment to verify it.
+- Decisions: the learner chose to keep `done → todo` and not apply the specified `done → in_progress` change, saying they understand how to change it if requirements change.
+- Not verified by the reviewer: Vitest was not run in the review environment (Node 22, and the dependency install failed). The reviewer type-checked `errors.ts` and `task-utils.ts` with TypeScript 6.0.3 and ran union and drift probes. Learner reported `npm run check` passed for 6018ea3: typecheck clean, 3 test files, 47/47 tests passed.
+- Next checkpoint: TS-03, checkpoint 1 (narrowing and type guards).
+
 ## Recording rules
 
 For each substantive session, record:
