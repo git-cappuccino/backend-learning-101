@@ -82,6 +82,7 @@
   - Called a `Record<…>` annotation "type narrowing". Corrected: narrowing is a runtime check that lets the compiler pick a union member (TS-03).
   - Described tests as "runtime assertions". Corrected: the `if`/`throw` is the runtime check; tests run before deployment to verify it.
 - Decisions: the learner chose to keep `done → todo` and not apply the specified `done → in_progress` change, saying they understand how to change it if requirements change.
+- Unresolved question (asked by the learner at the end of the session): in `(TASK_STATUSES as readonly string[]).includes(input)`, why is the widening target `readonly string[]` rather than `string[]`? Not yet explained. Explain at the start of the next session, with a few related examples, before TS-03 checkpoint 1.
 - Not verified by the reviewer: Vitest was not run in the review environment (Node 22, and the dependency install failed). The reviewer type-checked `errors.ts` and `task-utils.ts` with TypeScript 6.0.3 and ran union and drift probes. Learner reported `npm run check` passed for 6018ea3: typecheck clean, 3 test files, 47/47 tests passed.
 - Next checkpoint: TS-03, checkpoint 1 (narrowing and type guards).
 
