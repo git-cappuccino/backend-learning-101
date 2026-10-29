@@ -1,6 +1,11 @@
 import { ConflictError, NotFoundError, ValidationError } from "./errors.js";
 
-export const TASK_STATUSES = ["todo", "in_progress", "done", "blocked"] as const;
+export const TASK_STATUSES = [
+  "todo",
+  "in_progress",
+  "done",
+  "blocked",
+] as const;
 export type TaskStatus = (typeof TASK_STATUSES)[number];
 export interface Task {
   id: string;
@@ -31,8 +36,7 @@ export const changeStatus = (task: Task, next: TaskStatus): Task => {
       `Cannot change status from ${existingStatus} to ${next}`,
     );
   }
-  const newTask = { ...task };
-  newTask.status = next;
+  const newTask = { ...task, status: next };
   return newTask;
 };
 

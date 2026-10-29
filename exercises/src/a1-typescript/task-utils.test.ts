@@ -249,10 +249,9 @@ describe("parseStatus", () => {
     }
   });
   it("parses every valid status without throwing", () => {
-    expect(parseStatus("todo")).toBe("todo");
-    expect(parseStatus("in_progress")).toBe("in_progress");
-    expect(parseStatus("done")).toBe("done");
-    expect(parseStatus("blocked")).toBe("blocked");
+    for (const status of TASK_STATUSES) {
+      expect(parseStatus(status)).toBe(status);
+    }
   });
   it("passes the error to the toErrorResponse for client to get 400 VALIDATION_FAILED", () => {
     expect.assertions(2);
