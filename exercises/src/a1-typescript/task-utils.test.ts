@@ -219,19 +219,19 @@ describe("parseStatus", () => {
   it("throws for empty strings", () => {
     const parseStatusFn = () => parseStatus("");
     expect(parseStatusFn).toThrow(
-      `Invalid status "". Allowed: todo, in_progress, done`,
+      `Invalid status "". Allowed: todo, in_progress, done, blocked`,
     );
   });
   it("throws for whitespaces", () => {
     const parseStatusFn = () => parseStatus("  ");
     expect(parseStatusFn).toThrow(
-      `Invalid status "  ". Allowed: todo, in_progress, done`,
+      `Invalid status "  ". Allowed: todo, in_progress, done, blocked`,
     );
   });
   it("throws for case insensitive input", () => {
     const parseStatusFn = () => parseStatus("Todo");
     expect(parseStatusFn).toThrow(
-      `Invalid status "Todo". Allowed: todo, in_progress, done`,
+      `Invalid status "Todo". Allowed: todo, in_progress, done,  blocked`,
     );
   });
   it("error message contains every valid status for invalid inputs", () => {
@@ -283,6 +283,16 @@ describe("changeStatus", () => {
     expect(changeStatusFn).toThrow(
       `Cannot change status from in_progress to in_progress`,
     );
+  });
+  // leaving the other ones this is just for learning
+  it("rejects changing the status between disallowed values", () => {
+    const changeStatusFn = () => changeStatus(todoTask, "done");
+    expect(changeStatusFn).toThrow(ConflictError);
+    expect(changeStatusFn).toThrow(`Cannot change status from todo to done`);
+  });
+  it("doesn't mutate in the original task and creates a new task", () => {
+    const updatedtask = changeStatus(todoTask, "in_progress");
+    expect(updatedtask).not.toEqual(todoTask);
   });
   it("allows changing the status of task from todo to in_progress keeping original task unchanged", () => {
     const updatedTask = changeStatus(todoTask, "in_progress");
