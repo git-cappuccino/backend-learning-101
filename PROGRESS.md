@@ -7,7 +7,7 @@
 - Current topic: TS-03 — Narrowing and discriminated unions
 - Overall status: In progress
 - Last verified checkpoint: TS-02 checkpoint 2 and Exercise 3 (2026-10-29). Last verified topic: TS-02 (2026-10-29).
-- Next action: TS-03 checkpoint 1 (narrowing and type guards, starting by replacing the `as TaskStatus` cast in `parseStatus`). Carry forward: write test expectations from the spec, not the implementation.
+- Next action: first answer the learner's open question from Session 3: why the widening cast in `parseStatus` is `as readonly string[]` rather than `as string[]`, with a few related examples. Then TS-03 checkpoint 1 (narrowing and type guards, starting by replacing the `as TaskStatus` cast in `parseStatus`). Carry forward: write test expectations from the spec, not the implementation.
 
 ## Topic tracking
 
