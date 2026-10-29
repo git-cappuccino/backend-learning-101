@@ -11,7 +11,12 @@ import {
   TASK_STATUSES,
   totalEstimateHours,
 } from "./task-utils.js";
-import { ConflictError, NotFoundError, ValidationError } from "./errors.js";
+import {
+  ConflictError,
+  NotFoundError,
+  toErrorResponse,
+  ValidationError,
+} from "./errors.js";
 
 describe("createTask", () => {
   it("returns a task when id and title are present", () => {
@@ -216,38 +221,53 @@ describe("getFirstTaskTitle", () => {
 });
 
 describe("parseStatus", () => {
-  it("throws for empty strings", () => {
+  it("rejects for empty strings", () => {
     const parseStatusFn = () => parseStatus("");
-    expect(parseStatusFn).toThrow(
-      `Invalid status "". Allowed: todo, in_progress, done, blocked`,
-    );
+    expect(parseStatusFn).toThrow(ValidationError);
+    expect(parseStatusFn).toThrow(`Invalid status "".`);
   });
-  it("throws for whitespaces", () => {
+  it("rejects a whitespace-only status", () => {
     const parseStatusFn = () => parseStatus("  ");
-    expect(parseStatusFn).toThrow(
-      `Invalid status "  ". Allowed: todo, in_progress, done, blocked`,
-    );
+    expect(parseStatusFn).toThrow(ValidationError);
+    expect(parseStatusFn).toThrow(`Invalid status "  ".`);
   });
-  it("throws for case insensitive input", () => {
+  it("rejects a status with different casing", () => {
     const parseStatusFn = () => parseStatus("Todo");
-    expect(parseStatusFn).toThrow(
-      `Invalid status "Todo". Allowed: todo, in_progress, done,  blocked`,
-    );
+    expect(parseStatusFn).toThrow(ValidationError);
+    expect(parseStatusFn).toThrow(`Invalid status "Todo".`);
+  });
+  it("throws ValidationError for an unknown value", () => {
+    const parseStatusFn = () => parseStatus("archived");
+    expect(parseStatusFn).toThrow(ValidationError);
+    expect(parseStatusFn).toThrow(`Invalid status "archived".`);
   });
   it("error message contains every valid status for invalid inputs", () => {
-    // unknown input case is covered here
     const parseStatusFn = () => parseStatus("Invalid");
     expect(parseStatusFn).toThrow(ValidationError);
-    expect(parseStatusFn).toThrow("todo");
-    expect(parseStatusFn).toThrow("in_progress");
-    expect(parseStatusFn).toThrow("done");
-    expect(parseStatusFn).toThrow("blocked");
+    for (const status of TASK_STATUSES) {
+      expect(parseStatusFn).toThrow(status);
+    }
   });
   it("parses every valid status without throwing", () => {
     expect(parseStatus("todo")).toBe("todo");
     expect(parseStatus("in_progress")).toBe("in_progress");
     expect(parseStatus("done")).toBe("done");
     expect(parseStatus("blocked")).toBe("blocked");
+  });
+  it("passes the error to the toErrorResponse for client to get 400 VALIDATION_FAILED", () => {
+    expect.assertions(2);
+    try {
+      parseStatus("archived");
+    } catch (error) {
+      const response = toErrorResponse(error);
+      expect(response.status).toBe(400);
+      expect(response.body).toEqual({
+        error: {
+          code: "VALIDATION_FAILED",
+          message: `Invalid status "archived". Allowed: todo, in_progress, done, blocked`,
+        },
+      });
+    }
   });
 });
 
@@ -273,55 +293,67 @@ describe("changeStatus", () => {
     title: "interfaces and inheritance",
   };
 
-  it("rejects changing the status of task to the same value", () => {
-    let changeStatusFn = () => changeStatus(todoTask, "todo");
+  it("rejects changing the status of task from todo to the same status", () => {
+    const changeStatusFn = () => changeStatus(todoTask, "todo");
     expect(changeStatusFn).toThrow(ConflictError);
     expect(changeStatusFn).toThrow(`Cannot change status from todo to todo`);
-
-    changeStatusFn = () => changeStatus(inProgressTask, "in_progress");
+  });
+  it("rejects changing the status of task from in_progress to the same status", () => {
+    const changeStatusFn = () => changeStatus(inProgressTask, "in_progress");
     expect(changeStatusFn).toThrow(ConflictError);
     expect(changeStatusFn).toThrow(
       `Cannot change status from in_progress to in_progress`,
     );
   });
-  // leaving the other ones this is just for learning
+
   it("rejects changing the status between disallowed values", () => {
     const changeStatusFn = () => changeStatus(todoTask, "done");
     expect(changeStatusFn).toThrow(ConflictError);
     expect(changeStatusFn).toThrow(`Cannot change status from todo to done`);
   });
-  it("doesn't mutate in the original task and creates a new task", () => {
-    const updatedtask = changeStatus(todoTask, "in_progress");
-    expect(updatedtask).not.toEqual(todoTask);
+  it("doesn't mutate in the original task and returns a new task", () => {
+    const todoTaskCopy = { ...todoTask };
+    const updatedTask = changeStatus(todoTask, "in_progress");
+    expect(todoTask).toEqual(todoTaskCopy); // checks for mutation
+    expect(updatedTask).not.toBe(todoTask); // checks if different object is returned
   });
-  it("allows changing the status of task from todo to in_progress keeping original task unchanged", () => {
+  it("allows changing the status of task from todo to in_progress", () => {
     const updatedTask = changeStatus(todoTask, "in_progress");
     expect(updatedTask.status).toBe("in_progress");
-    expect(todoTask.status).toBe("todo");
   });
-  it("allows changing the status of task from todo to blocked keeping original task unchanged", () => {
+  it("allows changing the status of task from todo to blocked", () => {
     const updatedTask = changeStatus(todoTask, "blocked");
     expect(updatedTask.status).toBe("blocked");
-    expect(todoTask.status).toBe("todo");
   });
-  it("allows changing the status of task from blocked to in_progress keeping original task unchanged", () => {
+  it("allows changing the status of task from blocked to in_progress", () => {
     const updatedTask = changeStatus(blockedTask, "in_progress");
     expect(updatedTask.status).toBe("in_progress");
-    expect(blockedTask.status).toBe("blocked");
   });
-  it("allows changing the status of task from in_progress to todo keeping original task unchanged", () => {
+  it("allows changing the status of task from in_progress to todo", () => {
     const updatedTask = changeStatus(inProgressTask, "todo");
     expect(updatedTask.status).toBe("todo");
-    expect(inProgressTask.status).toBe("in_progress");
   });
-  it("allows changing the status of task from in_progress to done keeping original task unchanged", () => {
+  it("allows changing the status of task from in_progress to done", () => {
     const updatedTask = changeStatus(inProgressTask, "done");
     expect(updatedTask.status).toBe("done");
-    expect(inProgressTask.status).toBe("in_progress");
   });
-  it("allows changing the status of task from done to todo keeping original task unchanged", () => {
+  it("allows changing the status of task from done to todo", () => {
     const updatedTask = changeStatus(completedTask, "todo");
     expect(updatedTask.status).toBe("todo");
-    expect(completedTask.status).toBe("done");
+  });
+  it("passes the error to toErrorResponse for client to get 409 CONFLICT", () => {
+    expect.assertions(2);
+    try {
+      changeStatus(todoTask, "done");
+    } catch (error) {
+      const response = toErrorResponse(error);
+      expect(response.status).toBe(409);
+      expect(response.body).toEqual({
+        error: {
+          code: "CONFLICT",
+          message: `Cannot change status from todo to done`,
+        },
+      });
+    }
   });
 });
