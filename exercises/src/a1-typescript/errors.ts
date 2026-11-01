@@ -13,6 +13,25 @@ export interface ErrorResponse {
   body: ErrorResponseBody;
 }
 
+/**
+ * Important lines:
+ * - extends Error gives you message and stack, and makes err instanceof Error true.
+ * Your error looks like every other error to logging tools.
+ * 
+ * - super(message, options) calls Error’s constructor. message is the human-readable text.
+ * options is optional, and its useful field is cause, the lower-level error you’re wrapping,
+ * for example new ValidationError("Invalid date", { cause: parseErr }). The original is kept for logs.
+ * 
+ * - this.name = "ValidationError". Without this, a subclass reports itself as "Error",
+ * because name is inherited from Error.prototype. Set it so logs and stack traces say what actually happened.
+ * 
+ * - Subclasses fix the status/code pairing. A call site writes new ValidationError("…")
+ * and cannot accidentally create a 404 with code VALIDATION_FAILED.
+ * 
+ * - code versus message. code is the stable, machine-readable contract.
+ * For frontend if (error.code === "…")
+ */
+
 export class AppError extends Error {
   readonly statusCode: number;
   readonly code: ErrorCode;
