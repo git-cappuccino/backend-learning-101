@@ -11,6 +11,7 @@ import {
   parseStatus,
   type Task,
   TASK_STATUSES,
+  type TaskStatus,
   totalEstimateHours,
 } from "./task-utils.js";
 import {
@@ -227,6 +228,14 @@ describe("isTaskStatus", () => {
     for (const status of TASK_STATUSES) {
       const guardOutput = isTaskStatus(status);
       expect(guardOutput).toBe(true);
+    }
+  });
+  it("narrows a string to TaskStatus inside the guard", () => {
+    expect.assertions(1);
+    const raw: string = "todo";
+    if (isTaskStatus(raw)) {
+      const status: TaskStatus = raw;
+      expect(status).toBe("todo");
     }
   });
   it("returns false for unknown input", () => {
