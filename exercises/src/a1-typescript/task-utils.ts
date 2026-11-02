@@ -40,14 +40,21 @@ export const changeStatus = (task: Task, next: TaskStatus): Task => {
   return newTask;
 };
 
+export const isTaskStatus = (input: string): input is TaskStatus => {
+  return (TASK_STATUSES as readonly string[]).includes(input);
+};
+
 export const parseStatus = (input: string): TaskStatus => {
-  if (!(TASK_STATUSES as readonly string[]).includes(input)) {
+  if (!isTaskStatus(input)) {
     throw new ValidationError(
       `Invalid status "${input}". Allowed: ${TASK_STATUSES.join(", ")}`,
     );
   }
-  // TODO(TS-03): replace with a type guard
-  return input as TaskStatus;
+  return input;
+};
+
+export const keepValidStatuses = (inputs: readonly string[]): TaskStatus[] => {
+  return inputs.filter(isTaskStatus);
 };
 
 export const createTask = (id: string, title: string): Task => {

@@ -6,6 +6,8 @@ import {
   getFirstTaskTitle,
   getTaskOrThrow,
   getTaskTitle,
+  isTaskStatus,
+  keepValidStatuses,
   parseStatus,
   type Task,
   TASK_STATUSES,
@@ -217,6 +219,68 @@ describe("getFirstTaskTitle", () => {
     ];
     const firstTaskTitle = getFirstTaskTitle(tasks);
     expect(firstTaskTitle).toBe("Learn chapter 01 in TS");
+  });
+});
+
+describe("isTaskStatus", () => {
+  it("returns true for every value in TASK_STATUSES", () => {
+    for (const status of TASK_STATUSES) {
+      const guardOutput = isTaskStatus(status);
+      expect(guardOutput).toBe(true);
+    }
+  });
+  it("returns false for unknown input", () => {
+    const guardOutput = isTaskStatus("unknown");
+    expect(guardOutput).toBe(false);
+  });
+  it("returns false for empty strings", () => {
+    const guardOutput = isTaskStatus("");
+    expect(guardOutput).toBe(false);
+  });
+  it("returns false when case mismatch occurs for the valid status", () => {
+    const guardOutput = isTaskStatus("TODO");
+    expect(guardOutput).toBe(false);
+  });
+  it("returns false when valid status carries blank spaces", () => {
+    const guardOutput = isTaskStatus(" todo");
+    expect(guardOutput).toBe(false);
+  });
+});
+
+describe("keepValidStatuses", () => {
+  it("handles filtering, invalid values", () => {
+    const mixedinput = ["todo", "archived", "done"];
+    expect(keepValidStatuses(mixedinput)).toEqual(["todo", "done"]);
+
+    // invalid list => should return []
+    const allInvalidStatus = ["archived", "deleted", "unknown"];
+    expect(keepValidStatuses(allInvalidStatus)).toEqual([]);
+
+    // empty list => should return []
+    expect(keepValidStatuses([])).toEqual([]);
+  });
+
+  it("persists the input sequence correctly", () => {
+    const validStatus = ["blocked", "in_progress", "todo", "done"];
+    expect(keepValidStatuses(validStatus)).toEqual([
+      "blocked",
+      "in_progress",
+      "todo",
+      "done",
+    ]);
+  });
+
+  it("persists the duplicates", () => {
+    const input = ["done", "done"];
+    const statusList = keepValidStatuses(input);
+    expect(statusList).toEqual(["done", "done"]);
+  });
+
+  it("doesn't mutate input list", () => {
+    const inputStatus = ["archived", "blocked", "todo"];
+    const inputCopy = [...inputStatus];
+    keepValidStatuses(inputStatus);
+    expect(inputStatus).toEqual(inputCopy);
   });
 });
 
