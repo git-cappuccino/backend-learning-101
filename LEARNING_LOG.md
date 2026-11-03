@@ -86,6 +86,19 @@
 - Not verified by the reviewer: Vitest was not run in the review environment (Node 22, and the dependency install failed). The reviewer type-checked `errors.ts` and `task-utils.ts` with TypeScript 6.0.3 and ran union and drift probes. Learner reported `npm run check` passed for 6018ea3: typecheck clean, 3 test files, 47/47 tests passed.
 - Next checkpoint: TS-03, checkpoint 1 (narrowing and type guards).
 
+### 2026-10-30 to 2026-11-03 — Session 4: Session 3 open question and TS-03 checkpoint 1
+
+- Topics: TS-03 checkpoint 1 (In progress), TEST-01 practice.
+- Open question answered: `readonly` arrays allow mutable → readonly assignment but not the reverse; `as` needs one direction to be assignable, so `as string[]` fails (TS4104) while `readonly string[]` is pure widening and works even as an annotation; `readonly` is erased, so `.sort()` really mutates the shared constant.
+- Check: parts 1 and 3 correct (quoted both compiler errors; cast-free `listStatuses` with a spread copy). Part 2: exact error message, unchanged membership and restart behaviour correct; trace stopped at the `throw` rather than the response body.
+- Concepts taught: narrowing through control flow (`typeof`, truthiness, `===`/`switch`, `instanceof`, `in`, `Array.isArray`, early return); type predicates `x is T`; the compiler trusts a predicate body without checking it; the trust boundary; a predicate's false branch narrows too (shown failing at runtime); non-mutating `toSorted()`; module-level state is shared across requests.
+- Practical work: Exercise 4, commits 3e012e7 → 0527bd6. `isTaskStatus` guard, `parseStatus` without casts, stretch `keepValidStatuses(inputs: readonly string[])` via `inputs.filter(isTaskStatus)`. All 47 existing tests unchanged.
+- Review findings (not required to fix): one test bundles three scenarios; `"unknown"` used instead of the specified `"archived"`; the remaining widening cast in `isTaskStatus` could become an annotation. Boolean-return experiment: explanation correct, but only one of the three TS2322 errors was reported.
+- Assessment: checkpoint 1 check (lying `startsWith` guard). Part 1: correct verdict, but explained why `parseStatus` compiles rather than that the predicate body is unchecked (clarified by the reviewer). Part 2: complete trace to `409 CONFLICT` "Cannot change status from todo to in", contrasted with the contracted `400 VALIDATION_FAILED`.
+- Decisions: understanding checks focus on code and logic, not test tracing (see Learning decisions, 2026-11-03; commit 356c2e7).
+- Not verified by the reviewer: Vitest was not run (dependency install unavailable). Type checks used TypeScript 7.0.2, not the pinned 6.0.3; the error codes used here are the same in both. The learner reported `npm run check` passed for 0527bd6: 3 test files, 57/57 tests.
+- Next checkpoint: TS-03 checkpoint 2 (discriminated unions and exhaustive `switch` with `never`).
+
 ## Recording rules
 
 For each substantive session, record:
