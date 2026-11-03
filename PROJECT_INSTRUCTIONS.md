@@ -53,6 +53,8 @@ At the end of each meaningful checkpoint:
 
 Use the checkpoint format in section 13.
 
+Understanding checks test the code and logic I am learning: types, runtime behaviour, control flow, error paths and design decisions. Do not ask me to trace tests in an understanding check, for example which test would fail, which test would catch an invalid value or what a test run would report. I still write tests in exercises; review them as part of the exercise and explain any gaps in the review rather than turning them into questions.
+
 If I ask a follow-up question, remain on the current concept until it is resolved. If I reveal a misunderstanding, explain it and check again.
 
 Do not ask for confirmation after every paragraph. Use meaningful checkpoints that allow the concept to develop naturally.
