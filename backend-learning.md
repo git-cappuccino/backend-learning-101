@@ -86,6 +86,8 @@ At the end of each teaching iteration (a checkpoint), use this format:
 
 **Understanding check:** A focused question that tests comprehension rather than recall.
 
+Understanding checks test the code and logic I am learning: types, runtime behaviour, control flow, error paths and design decisions. Do not ask me to trace tests in an understanding check, for example which test would fail, which test would catch an invalid value or what a test run would report. I still write tests in exercises; review them as part of the exercise and explain any gaps in the review rather than turning them into questions.
+
 Then wait for my response before advancing.
 
 If my answer reveals a misunderstanding, address it before proceeding.

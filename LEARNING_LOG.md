@@ -135,3 +135,9 @@ Record significant curriculum or technology decisions here, including why a chan
 - Decision: Vitest as the test runner. NestJS now generates new projects with Vitest by default, and Vitest runs TypeScript and ESM without ts-jest or Babel. Jest syntax will be compared when we reach mocking.
 - Decision: Node.js 24 LTS (24.18.0) and TypeScript 6.0.3 (pinned exactly), not 7.0. TS 7.0 has no stable programmatic API until 7.1, and typescript-eslint support for 7.x is expected around Q1 2027. Revisit in 2027. Moving to Node 26 LTS is also deferred to a natural break.
 - Setup commit: d3548ed. tsconfig: strict + noUncheckedIndexedAccess, module nodenext, noEmit. Scripts: test, test:watch, typecheck, check.
+
+### 2026-11-03 — Understanding checks focus on code and logic, not test tracing
+
+- Decision: Understanding checks no longer ask the learner to trace tests (which test would fail, which test would catch an invalid value, what a run would report). They test the code and logic being taught. The learner still writes tests in every exercise; the reviewer points out test gaps in the exercise review instead of asking about them.
+- Reason: The learner's request. Test-tracing questions slowed progress without adding to the topic being learned.
+- Effect: backend-learning.md §5 updated; the Claude Project instructions §3 are to be updated by the learner to match. TEST-01 stays Practiced. "Write expectations from the spec" remains a weak area, now handled in exercise reviews. The pending TS-03 checkpoint 1 check drops its test question (part 3).
