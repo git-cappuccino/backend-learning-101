@@ -6,7 +6,8 @@ export type TaskCommand =
   | { type: "rename"; title: string }
   | { type: "assign"; assigneeId: string }
   | { type: "unassign" }
-  | { type: "change_status"; to: TaskStatus };
+  | { type: "change_status"; to: TaskStatus }
+  | { type: "estimate"; hours: number };
 
 export const applyCommand = (task: Task, command: TaskCommand): Task => {
   switch (command.type) {
@@ -33,6 +34,18 @@ export const applyCommand = (task: Task, command: TaskCommand): Task => {
 
     case "change_status": {
       return changeStatus(task, command.to);
+    }
+
+    case "estimate": {
+      const estimateHours = command.hours;
+      const isValid = Number.isFinite(estimateHours) && estimateHours > 0;
+      if (!isValid) {
+        throw new ValidationError("Estimate must be a positive number");
+      }
+      return {
+        ...task,
+        estimateHours,
+      };
     }
 
     default:

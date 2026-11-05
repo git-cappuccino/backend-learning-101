@@ -150,6 +150,56 @@ describe("applyCommand", () => {
       expect(dummyTodoTask).toEqual(dummyTodoTaskCopy);
     });
   });
+  describe("while estimating the hours", () => {
+    const dummyTodoTask: Task = {
+      id: "TS-03",
+      status: "todo",
+      title: "Discriminated Unions",
+    };
+    it("rejects if the hours given in command are 0", () => {
+      const estimateHours: TaskCommand = { type: "estimate", hours: 0 };
+      const applyCommandFn = () => applyCommand(dummyTodoTask, estimateHours);
+      expect(applyCommandFn).toThrow(ValidationError);
+      expect(applyCommandFn).toThrow("Estimate must be a positive number");
+    });
+    it("rejects if the hours given in command are negative", () => {
+      const estimateHours: TaskCommand = { type: "estimate", hours: -10 };
+      const applyCommandFn = () => applyCommand(dummyTodoTask, estimateHours);
+      expect(applyCommandFn).toThrow(ValidationError);
+      expect(applyCommandFn).toThrow("Estimate must be a positive number");
+    });
+    it("rejects if the hours given in command are NaN", () => {
+      const estimateHours: TaskCommand = { type: "estimate", hours: NaN };
+      const applyCommandFn = () => applyCommand(dummyTodoTask, estimateHours);
+      expect(applyCommandFn).toThrow(ValidationError);
+      expect(applyCommandFn).toThrow("Estimate must be a positive number");
+    });
+    it("rejects if the hours given in command are -Infinity", () => {
+      const estimateHours: TaskCommand = { type: "estimate", hours: -Infinity };
+      const applyCommandFn = () => applyCommand(dummyTodoTask, estimateHours);
+      expect(applyCommandFn).toThrow(ValidationError);
+      expect(applyCommandFn).toThrow("Estimate must be a positive number");
+    });
+    it("rejects if the hours given in command are Infinity", () => {
+      const estimateHours: TaskCommand = { type: "estimate", hours: Infinity };
+      const applyCommandFn = () => applyCommand(dummyTodoTask, estimateHours);
+      expect(applyCommandFn).toThrow(ValidationError);
+      expect(applyCommandFn).toThrow("Estimate must be a positive number");
+    });
+
+    it("updates the estimated hours of the task when valid", () => {
+      const estimateHours: TaskCommand = { type: "estimate", hours: 20 };
+      const estimatedTask = applyCommand(dummyTodoTask, estimateHours);
+      expect(estimatedTask.estimateHours).toBe(20);
+    });
+    it("returns a new task and prevents modifying the original task", () => {
+      const estimateHours: TaskCommand = { type: "estimate", hours: 20 };
+      const dummyTodoTaskCopy: Task = { ...dummyTodoTask };
+      const estimatedTask = applyCommand(dummyTodoTask, estimateHours);
+      expect(estimatedTask).not.toBe(dummyTodoTask);
+      expect(dummyTodoTask).toEqual(dummyTodoTaskCopy);
+    });
+  });
   it("rejects if the command is invalid", () => {
     const dummyTodoTask: Task = {
       id: "TS-03",
