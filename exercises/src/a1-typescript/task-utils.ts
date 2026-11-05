@@ -7,6 +7,10 @@ export const TASK_STATUSES = [
   "blocked",
 ] as const;
 export type TaskStatus = (typeof TASK_STATUSES)[number];
+
+export type StatusParseResult =
+  | { ok: true; status: TaskStatus }
+  | { ok: false; error: ValidationError };
 export interface Task {
   id: string;
   title: string;
@@ -28,6 +32,41 @@ export const ALLOWED_TRANSITIONS: Record<TaskStatus, readonly TaskStatus[]> = {
   done: ["todo"], // reopen
 };
 
+export const isTaskStatus = (input: string): input is TaskStatus => {
+  return (TASK_STATUSES as readonly string[]).includes(input);
+};
+
+export const safeParseStatus = (input: string): StatusParseResult => {
+  if (!isTaskStatus(input)) {
+    return {
+      ok: false,
+      error: new ValidationError(
+        `Invalid status "${input}". Allowed: ${TASK_STATUSES.join(", ")}`,
+      ),
+    };
+  }
+  return {
+    ok: true,
+    status: input,
+  };
+};
+
+export const parseStatus = (input: string): TaskStatus => {
+  const result = safeParseStatus(input);
+  if (!result.ok) {
+    throw result.error;
+  }
+  return result.status;
+};
+
+export const getTaskOrThrow = (tasks: Task[], id: string): Task => {
+  const taskToFetch = tasks.find((task) => task.id === id);
+  if (!taskToFetch) {
+    throw new NotFoundError("Task", id);
+  }
+  return taskToFetch;
+};
+
 export const changeStatus = (task: Task, next: TaskStatus): Task => {
   const existingStatus = task.status;
   const canTransition = ALLOWED_TRANSITIONS[existingStatus].includes(next);
@@ -38,19 +77,6 @@ export const changeStatus = (task: Task, next: TaskStatus): Task => {
   }
   const newTask = { ...task, status: next };
   return newTask;
-};
-
-export const isTaskStatus = (input: string): input is TaskStatus => {
-  return (TASK_STATUSES as readonly string[]).includes(input);
-};
-
-export const parseStatus = (input: string): TaskStatus => {
-  if (!isTaskStatus(input)) {
-    throw new ValidationError(
-      `Invalid status "${input}". Allowed: ${TASK_STATUSES.join(", ")}`,
-    );
-  }
-  return input;
 };
 
 export const keepValidStatuses = (inputs: readonly string[]): TaskStatus[] => {
@@ -71,14 +97,6 @@ export const createTask = (id: string, title: string): Task => {
     title: taskTitle,
     status: TASK_DEFAULTS.status,
   };
-};
-
-export const getTaskOrThrow = (tasks: Task[], id: string): Task => {
-  const taskToFetch = tasks.find((task) => task.id === id);
-  if (!taskToFetch) {
-    throw new NotFoundError("Task", id);
-  }
-  return taskToFetch;
 };
 
 export const getTaskTitle = (tasks: Task[], id: string): string | null => {

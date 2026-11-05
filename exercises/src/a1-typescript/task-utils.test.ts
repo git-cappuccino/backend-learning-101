@@ -9,6 +9,7 @@ import {
   isTaskStatus,
   keepValidStatuses,
   parseStatus,
+  safeParseStatus,
   type Task,
   TASK_STATUSES,
   type TaskStatus,
@@ -290,6 +291,39 @@ describe("keepValidStatuses", () => {
     const inputCopy = [...inputStatus];
     keepValidStatuses(inputStatus);
     expect(inputStatus).toEqual(inputCopy);
+  });
+});
+
+describe("safeParseStatus", () => {
+  it("returns an object with error if the task status is invalid", () => {
+    const result = safeParseStatus("archived");
+    expect(result).toEqual({
+      ok: false,
+      error: new ValidationError(
+        `Invalid status "archived". Allowed: todo, in_progress, done, blocked`,
+      ),
+    });
+  });
+  it("returns an object with valid status", () => {
+    const result = safeParseStatus("todo");
+    expect(result).toEqual({
+      ok: true,
+      status: "todo",
+    });
+  });
+  it("maps the returned error to a 400 VALIDATION_FAILED response", () => {
+    expect.assertions(2);
+    const result = safeParseStatus("archived");
+    if (!result.ok) {
+      const response = toErrorResponse(result.error);
+      expect(response.status).toBe(400);
+      expect(response.body).toEqual({
+        error: {
+          code: "VALIDATION_FAILED",
+          message: `Invalid status "archived". Allowed: todo, in_progress, done, blocked`,
+        },
+      });
+    }
   });
 });
 

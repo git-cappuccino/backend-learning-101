@@ -4,6 +4,7 @@
     "module": "nodenext",
     "strict": true,
     "noUncheckedIndexedAccess": true,
+    "noUnusedLocals": true,
     "noEmit": true,
     "skipLibCheck": true
   },
