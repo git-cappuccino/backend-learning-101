@@ -15,7 +15,7 @@
   - Widening and `as const`, and explicit return types on exported functions.
   - How `any` from `JSON.parse` spreads through inference.
   - tsc vs Vitest as separate checks.
-- Practical work: Exercise 1, task-utils (5 functions, 12 tests). Review rounds: 5b6d70f → 5571e4e → 0780b2d → 556f224.
+- Practical work: Exercise 1, task-utils (5 functions, 12 tests). Review rounds: 21d22af → 70e8163 → c38f018 → a1fea7d.
 - Review findings, all fixed:
   - A lookup threw despite declaring `string | null`.
   - A display label was stored in the data defaults (`TASK_DEFAULTS.assigneeId: "Unassigned"`).
@@ -39,7 +39,7 @@
   - `as` turns off checking. Class types are structural at compile time, but `instanceof` checks how an object was constructed.
   - Return `null` when absence is a normal result; throw when the operation cannot continue. An empty collection is 200 with `[]`, while a missing single resource is 404. Next.js `notFound()` uses the same throw pattern.
   - `in` checks property keys, not array values.
-- Practical work: Exercise 2, typed errors. Review rounds: e9f55d1 → cbe57d6 → a834239.
+- Practical work: Exercise 2, typed errors. Review rounds: 4527c2e → ec3d395 → b4031cb.
 - Review findings, all fixed:
   - Assertions that could never fail (on the handler's response object and on test input data), plus duplicated hierarchy assertions.
   - Public types (`ErrorCode`, `ErrorResponse`, `ErrorResponseBody`) were not exported.
@@ -56,7 +56,7 @@
   - Used `err.code in [...]` as a value-membership check. Corrected: `in` checks keys, `.includes()` checks values, and `unknown` blocks the property access anyway.
 - Self-initiated improvements: added a trimming test and fixed a stale `getAssigneeLabel` test name without being asked.
 - Deferred by design: putting `statusCode` on domain errors couples the domain to HTTP. Revisit in ARCH-04 (domain logic versus transport logic). Server-side logging of unknown errors is deferred to ARCH-08.
-- Not verified by the reviewer: Vitest was not run in the review environment (Node 22, and the dependency install failed). The reviewer type-checked `errors.ts` and `task-utils.ts` with TypeScript 6.0.3 and ran a runtime probe of `createTask`, `getTaskOrThrow` and `toErrorResponse`. Learner reported `npm run check` passed for e9f55d1; it was not re-reported for cbe57d6 or a834239.
+- Not verified by the reviewer: Vitest was not run in the review environment (Node 22, and the dependency install failed). The reviewer type-checked `errors.ts` and `task-utils.ts` with TypeScript 6.0.3 and ran a runtime probe of `createTask`, `getTaskOrThrow` and `toErrorResponse`. Learner reported `npm run check` passed for 4527c2e; it was not re-reported for ec3d395 or b4031cb.
 - Next checkpoint: TS-02, checkpoint 2 (union types in depth).
 
 ### 2026-10-26 to 2026-10-29 — Session 3: TS-02 checkpoint 2 and Exercise 3 (with TEST-01 practice)
@@ -69,9 +69,9 @@
   - `in` checks keys; `.includes()` on a readonly tuple rejects a plain `string`; widening with `as readonly string[]` is the safe direction of `as`, while `input as TaskStatus` is a claim the compiler cannot check.
   - `Record<Union, V>` forces every key to be present (missing and extra keys both fail) but cannot check that the values are correct; business rules need tests.
   - Type errors do not stop Node or Vitest from running the code; only `tsc` enforces types.
-- Practical work: Exercise 3, task status as a single source of truth. Commits 327715f (Parts 1–2) → 59b51d1 (`blocked` added) → f830ee5 → 7147336 → 6018ea3.
+- Practical work: Exercise 3, task status as a single source of truth. Commits bfb0206 (Parts 1–2) → e3bf590 (`blocked` added) → 09ed84e → e75aeb6 → d89ae18.
 - Review findings:
-  - Fixed: the first stretch attempt (327715f) built errors by hand and re-tested `toErrorResponse`; 7147336 calls the real `parseStatus` and `changeStatus`. The valid-status test now loops over `TASK_STATUSES`. `changeStatus` uses `{ ...task, status: next }`.
+  - Fixed: the first stretch attempt (bfb0206) built errors by hand and re-tested `toErrorResponse`; e75aeb6 calls the real `parseStatus` and `changeStatus`. The valid-status test now loops over `TASK_STATUSES`. `changeStatus` uses `{ ...task, status: next }`.
   - Not fixed by choice: `done → todo` instead of the specified `done → in_progress`; tests encode the implementation. The 400 response test still hardcodes the allowed-status list. No rejection tests involve `blocked` or `done`.
 - Assessment:
   - Checkpoint 2 check (teammate's `parseStatus` PR): part 1 correct; part 2 diagnosis correct (two drifting sources of truth) but predicted a 500 where the code returns a 400 `VALIDATION_FAILED`; part 3 correct, including the `readonly string[]` fix.
@@ -83,7 +83,7 @@
   - Described tests as "runtime assertions". Corrected: the `if`/`throw` is the runtime check; tests run before deployment to verify it.
 - Decisions: the learner chose to keep `done → todo` and not apply the specified `done → in_progress` change, saying they understand how to change it if requirements change.
 - Unresolved question (asked by the learner at the end of the session): in `(TASK_STATUSES as readonly string[]).includes(input)`, why is the widening target `readonly string[]` rather than `string[]`? Not yet explained. Explain at the start of the next session, with a few related examples, before TS-03 checkpoint 1.
-- Not verified by the reviewer: Vitest was not run in the review environment (Node 22, and the dependency install failed). The reviewer type-checked `errors.ts` and `task-utils.ts` with TypeScript 6.0.3 and ran union and drift probes. Learner reported `npm run check` passed for 6018ea3: typecheck clean, 3 test files, 47/47 tests passed.
+- Not verified by the reviewer: Vitest was not run in the review environment (Node 22, and the dependency install failed). The reviewer type-checked `errors.ts` and `task-utils.ts` with TypeScript 6.0.3 and ran union and drift probes. Learner reported `npm run check` passed for d89ae18: typecheck clean, 3 test files, 47/47 tests passed.
 - Next checkpoint: TS-03, checkpoint 1 (narrowing and type guards).
 
 ### 2026-10-30 to 2026-11-03 — Session 4: Session 3 open question and TS-03 checkpoint 1
@@ -92,22 +92,22 @@
 - Open question answered: `readonly` arrays allow mutable → readonly assignment but not the reverse; `as` needs one direction to be assignable, so `as string[]` fails (TS4104) while `readonly string[]` is pure widening and works even as an annotation; `readonly` is erased, so `.sort()` really mutates the shared constant.
 - Check: parts 1 and 3 correct (quoted both compiler errors; cast-free `listStatuses` with a spread copy). Part 2: exact error message, unchanged membership and restart behaviour correct; trace stopped at the `throw` rather than the response body.
 - Concepts taught: narrowing through control flow (`typeof`, truthiness, `===`/`switch`, `instanceof`, `in`, `Array.isArray`, early return); type predicates `x is T`; the compiler trusts a predicate body without checking it; the trust boundary; a predicate's false branch narrows too (shown failing at runtime); non-mutating `toSorted()`; module-level state is shared across requests.
-- Practical work: Exercise 4, commits 3e012e7 → 0527bd6. `isTaskStatus` guard, `parseStatus` without casts, stretch `keepValidStatuses(inputs: readonly string[])` via `inputs.filter(isTaskStatus)`. All 47 existing tests unchanged.
+- Practical work: Exercise 4, commits 72b6405 → 3455cc1. `isTaskStatus` guard, `parseStatus` without casts, stretch `keepValidStatuses(inputs: readonly string[])` via `inputs.filter(isTaskStatus)`. All 47 existing tests unchanged.
 - Review findings (not required to fix): one test bundles three scenarios; `"unknown"` used instead of the specified `"archived"`; the remaining widening cast in `isTaskStatus` could become an annotation. Boolean-return experiment: explanation correct, but only one of the three TS2322 errors was reported.
 - Assessment: checkpoint 1 check (lying `startsWith` guard). Part 1: correct verdict, but explained why `parseStatus` compiles rather than that the predicate body is unchecked (clarified by the reviewer). Part 2: complete trace to `409 CONFLICT` "Cannot change status from todo to in", contrasted with the contracted `400 VALIDATION_FAILED`.
-- Decisions: understanding checks focus on code and logic, not test tracing (see Learning decisions, 2026-11-03; commit 356c2e7).
-- Not verified by the reviewer: Vitest was not run (dependency install unavailable). Type checks used TypeScript 7.0.2, not the pinned 6.0.3; the error codes used here are the same in both. The learner reported `npm run check` passed for 0527bd6: 3 test files, 57/57 tests.
+- Decisions: understanding checks focus on code and logic, not test tracing (see Learning decisions, 2026-11-03; commit 0288cba).
+- Not verified by the reviewer: Vitest was not run (dependency install unavailable). Type checks used TypeScript 7.0.2, not the pinned 6.0.3; the error codes used here are the same in both. The learner reported `npm run check` passed for 3455cc1: 3 test files, 57/57 tests.
 - Next checkpoint: TS-03 checkpoint 2 (discriminated unions and exhaustive `switch` with `never`).
 
 ### 2026-11-04 to 2026-11-06 — Session 5: TS-03 checkpoint 2 and Exercise 5
 
 - Topics: TS-03 checkpoint 2 (Verified, topic complete), TEST-01 practice.
 - Concepts taught: flat interface with optional fields vs discriminated union; the tag's three rules (present on every member, literal type, unique); narrowing on the tag in `switch`; tag narrowing is checked by the compiler while a predicate body is trusted, but both are only as true as the boundary data; exhaustive `switch` with `assertNever(value: never): never` (compile-time TS2345 naming the missing variant; runtime plain `Error` → `toErrorResponse` fails closed → 500); TS2366 without a default and no error for a `void` switch; `Record<Union, V>` for lookup tables vs `switch` for per-variant logic; throwable error classes vs returnable tagged data; result types as boolean-tagged unions.
-- Practical work: Exercise 5, commits 24ca856 → fecdb30. `StatusParseResult` and `safeParseStatus` (never throws), `parseStatus` rewritten to throw `result.error`; `assertNever` in `assert-never.ts`; `applyCommand` for `rename`, `assign`, `unassign` (key removed with rest destructuring), `change_status` (delegates to `changeStatus`); Part 3 `estimate` added after recording the exact TS2345 error. Stretch: `safeParseStatus` error mapped to 400 through `toErrorResponse`. Learner also enabled `noUnusedLocals` and added an `@ts-expect-error` test for the unhandled-variant runtime path.
+- Practical work: Exercise 5, commits b89ede9 → 90db72a. `StatusParseResult` and `safeParseStatus` (never throws), `parseStatus` rewritten to throw `result.error`; `assertNever` in `assert-never.ts`; `applyCommand` for `rename`, `assign`, `unassign` (key removed with rest destructuring), `change_status` (delegates to `changeStatus`); Part 3 `estimate` added after recording the exact TS2345 error. Stretch: `safeParseStatus` error mapped to 400 through `toErrorResponse`. Learner also enabled `noUnusedLocals` and added an `@ts-expect-error` test for the unhandled-variant runtime path.
 - Review findings (not required to fix): happy-path tests assert only the changed field, so a stray `assigneeId: undefined` would pass; no test for `unassign` on an unassigned task or for a fractional `estimate`. The compiler accepts `{ ...task, assigneeId: undefined }` as a `Task` (no `exactOptionalPropertyTypes`), so key absence is protected only by the test.
 - Assessment: checkpoint 2 check (webhook handler with a guard that only checks `"type" in x`). Q1: correct response `200` with `Created "undefined"`, attributed to the lying guard; the explanation mixed up compile time and runtime (clarified by the reviewer: the guard really returned `true` at runtime; at compile time the trusted predicate gave `TaskEvent`, and tag narrowing then assumed `title: string`). Q2: both parts correct (`200 "Unknown event"`; `tsc` reports nothing once `assertNever` is removed). Q3: first traced the current 500 rather than answering where `task_deleted` should be rejected; after redirection, stated that client mistakes are rejected at the boundary with a 400 and `assertNever` should never run for client input.
 - Decisions: a code follow-up to Q3 (rewrite `isTaskEvent` to reject both bodies) was withdrawn because it required narrowing the properties of an `unknown` object, which is TS-05 scope. The guard's two layers (known tag list; required fields per variant) were described in words only.
-- Not verified by the reviewer: Vitest was not run (dependency install unavailable). Type checks of the source files used TypeScript 6.0.2, not the pinned 6.0.3. The learner reported `npm run check` passed for fecdb30: 4 test files, 84/84 tests.
+- Not verified by the reviewer: Vitest was not run (dependency install unavailable). Type checks of the source files used TypeScript 6.0.2, not the pinned 6.0.3. The learner reported `npm run check` passed for 90db72a: 4 test files, 84/84 tests.
 - Next checkpoint: TS-04 checkpoint 1 (generic functions and types, starting from `StatusParseResult` → `Result<T, E>`).
 
 ## Recording rules
@@ -158,10 +158,16 @@ Record significant curriculum or technology decisions here, including why a chan
 - Decision: Exercise code lives in `exercises/`, one npm package in this repo. The capstone gets its own repository later.
 - Decision: Vitest as the test runner. NestJS now generates new projects with Vitest by default, and Vitest runs TypeScript and ESM without ts-jest or Babel. Jest syntax will be compared when we reach mocking.
 - Decision: Node.js 24 LTS (24.18.0) and TypeScript 6.0.3 (pinned exactly), not 7.0. TS 7.0 has no stable programmatic API until 7.1, and typescript-eslint support for 7.x is expected around Q1 2027. Revisit in 2027. Moving to Node 26 LTS is also deferred to a natural break.
-- Setup commit: d3548ed. tsconfig: strict + noUncheckedIndexedAccess, module nodenext, noEmit. Scripts: test, test:watch, typecheck, check.
+- Setup commit: 9965337. tsconfig: strict + noUncheckedIndexedAccess, module nodenext, noEmit. Scripts: test, test:watch, typecheck, check.
 
 ### 2026-11-03 — Understanding checks focus on code and logic, not test tracing
 
 - Decision: Understanding checks no longer ask the learner to trace tests (which test would fail, which test would catch an invalid value, what a run would report). They test the code and logic being taught. The learner still writes tests in every exercise; the reviewer points out test gaps in the exercise review instead of asking about them.
 - Reason: The learner's request. Test-tracing questions slowed progress without adding to the topic being learned.
 - Effect: backend-learning.md §5 updated; the Claude Project instructions §3 are to be updated by the learner to match. TEST-01 stays Practiced. "Write expectations from the spec" remains a weak area, now handled in exercise reviews. The pending TS-03 checkpoint 1 check drops its test question (part 3).
+
+### 2026-11-06 — Commit author email rewritten; all commit hashes changed
+
+- Decision: Rewrote `master`'s history so that commits authored with the work email (`piychauh@publicisgroupe.net`) use the personal GitHub email (`piyush.official.acc@gmail.com`), for both author and committer. 23 commits changed; Claude's record commits kept their author. Dates, messages and file contents are unchanged.
+- Reason: The learner's request, so that learning activity is credited to the personal GitHub account.
+- Effect: Every commit hash in the repository changed. All 32 hash references in PROGRESS.md and LEARNING_LOG.md were updated to the new hashes, as were the two hashes in the Session 4 record commit message. Commit links shared before 2026-11-06 (for example `24ca856`, `fecdb30`) point to the old history. Local clones must be reset to `origin/master` or re-cloned.
