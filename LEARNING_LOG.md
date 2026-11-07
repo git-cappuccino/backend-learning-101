@@ -168,6 +168,6 @@ Record significant curriculum or technology decisions here, including why a chan
 
 ### 2026-11-06 — Commit author email rewritten; all commit hashes changed
 
-- Decision: Rewrote `master`'s history so that commits authored with the work email (`piychauh@publicisgroupe.net`) use the personal GitHub email (`piyush.official.acc@gmail.com`), for both author and committer. 23 commits changed; Claude's record commits kept their author. Dates, messages and file contents are unchanged.
+- Decision: Rewrote `master`'s history to use the personal GitHub email (`piyush.official.acc@gmail.com`), for both author and committer. 23 commits changed; Claude's record commits kept their author. Dates, messages and file contents are unchanged.
 - Reason: The learner's request, so that learning activity is credited to the personal GitHub account.
 - Effect: Every commit hash in the repository changed. All 32 hash references in PROGRESS.md and LEARNING_LOG.md were updated to the new hashes, as were the two hashes in the Session 4 record commit message. Commit links shared before 2026-11-06 (for example `24ca856`, `fecdb30`) point to the old history. Local clones must be reset to `origin/master` or re-cloned.
