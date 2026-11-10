@@ -1,4 +1,5 @@
 import { ConflictError, NotFoundError, ValidationError } from "./errors.js";
+import { err, getOrThrow, ok, Result } from "./result.js";
 
 export const TASK_STATUSES = [
   "todo",
@@ -7,10 +8,6 @@ export const TASK_STATUSES = [
   "blocked",
 ] as const;
 export type TaskStatus = (typeof TASK_STATUSES)[number];
-
-export type StatusParseResult =
-  | { ok: true; status: TaskStatus }
-  | { ok: false; error: ValidationError };
 export interface Task {
   id: string;
   title: string;
@@ -36,27 +33,31 @@ export const isTaskStatus = (input: string): input is TaskStatus => {
   return (TASK_STATUSES as readonly string[]).includes(input);
 };
 
-export const safeParseStatus = (input: string): StatusParseResult => {
+export const safeParseStatus = (
+  input: string,
+): Result<TaskStatus, ValidationError> => {
   if (!isTaskStatus(input)) {
-    return {
-      ok: false,
-      error: new ValidationError(
+    return err(
+      new ValidationError(
         `Invalid status "${input}". Allowed: ${TASK_STATUSES.join(", ")}`,
       ),
-    };
+    );
   }
-  return {
-    ok: true,
-    status: input,
-  };
+  return ok(input);
 };
 
 export const parseStatus = (input: string): TaskStatus => {
-  const result = safeParseStatus(input);
-  if (!result.ok) {
-    throw result.error;
+  return getOrThrow(safeParseStatus(input));
+};
+
+export const safeParseTitle = (
+  input: string,
+): Result<string, ValidationError> => {
+  const title = input.trim();
+  if (!title) {
+    return err(new ValidationError("Task title cannot be blank"));
   }
-  return result.status;
+  return ok(title);
 };
 
 export const getTaskOrThrow = (tasks: Task[], id: string): Task => {
@@ -85,13 +86,10 @@ export const keepValidStatuses = (inputs: readonly string[]): TaskStatus[] => {
 
 export const createTask = (id: string, title: string): Task => {
   const taskId = id.trim();
-  const taskTitle = title.trim();
   if (!taskId) {
     throw new ValidationError("Task ID cannot be blank");
   }
-  if (!taskTitle) {
-    throw new ValidationError("Task title cannot be blank");
-  }
+  const taskTitle = getOrThrow(safeParseTitle(title));
   return {
     id: taskId,
     title: taskTitle,

@@ -1,6 +1,12 @@
 import { assertNever } from "./assert-never.js";
 import { ValidationError } from "./errors.js";
-import { changeStatus, Task, TaskStatus } from "./task-utils.js";
+import { getOrThrow } from "./result.js";
+import {
+  changeStatus,
+  safeParseTitle,
+  Task,
+  TaskStatus,
+} from "./task-utils.js";
 
 export type TaskCommand =
   | { type: "rename"; title: string }
@@ -31,10 +37,7 @@ export type TaskCommand =
 export const applyCommand = (task: Task, command: TaskCommand): Task => {
   switch (command.type) {
     case "rename": {
-      const newTitle = command.title.trim();
-      if (!newTitle) {
-        throw new ValidationError("Task title cannot be blank");
-      }
+      const newTitle = getOrThrow(safeParseTitle(command.title));
       return { ...task, title: newTitle };
     }
 

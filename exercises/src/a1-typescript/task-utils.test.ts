@@ -308,7 +308,7 @@ describe("safeParseStatus", () => {
     const result = safeParseStatus("todo");
     expect(result).toEqual({
       ok: true,
-      status: "todo",
+      value: "todo",
     });
   });
   it("maps the returned error to a 400 VALIDATION_FAILED response", () => {
