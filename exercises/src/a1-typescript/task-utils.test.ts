@@ -10,6 +10,7 @@ import {
   keepValidStatuses,
   parseStatus,
   safeParseStatus,
+  safeParseTitle,
   type Task,
   TASK_STATUSES,
   type TaskStatus,
@@ -374,6 +375,37 @@ describe("parseStatus", () => {
         },
       });
     }
+  });
+});
+
+describe("safeParseTitle", () => {
+  it("returns the ValidationError result if input is an empty string", () => {
+    const result = safeParseTitle("");
+    expect(result).toEqual({
+      ok: false,
+      error: new ValidationError("Task title cannot be blank"),
+    });
+  });
+  it("returns the ValidationError result if the input carries only whitespaces", () => {
+    const result = safeParseTitle("  ");
+    expect(result).toEqual({
+      ok: false,
+      error: new ValidationError("Task title cannot be blank"),
+    });
+  });
+  it("returns the result with value if input is a non-empty string", () => {
+    const result = safeParseTitle("TS 04 in progress");
+    expect(result).toEqual({
+      ok: true,
+      value: "TS 04 in progress",
+    });
+  });
+  it("removes the whitespace characters from the title on the edges in the output result", () => {
+    const result = safeParseTitle("  Write docs  ");
+    expect(result).toEqual({
+      ok: true,
+      value: "Write docs",
+    });
   });
 });
 
