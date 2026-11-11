@@ -16,7 +16,7 @@ Applied AI engineering is a subsequent stage, built on the backend foundation.
 
 This curriculum follows an 80/20 approach: prioritize the concepts and workflows most useful in professional development, but explain those concepts in sufficient depth.
 
-Lessons are incremental rather than documentation-style dumps. Practical exercises, diagrams, checkpoints and understanding assessments help turn explanations into usable engineering skills.
+Lessons are incremental rather than documentation-style dumps. Practical exercises, diagrams, checkpoints and coding challenges help turn explanations into usable engineering skills.
 
 The goal is durable understanding, not simply completing a syllabus.
 
@@ -75,7 +75,7 @@ Use this prompt in Claude Project or Claude Code:
 
 > Curriculum session: backend engineering.
 >
-> Read the teaching preferences, curriculum and latest progress records. Identify the last verified checkpoint and teach the next logical concept incrementally. Follow the 80/20 approach, explain selected concepts properly, give practical exercises and check my understanding before advancing.
+> Read the teaching preferences, curriculum and latest progress records. Identify the last verified checkpoint and teach the next logical concept incrementally. Follow the 80/20 approach, explain selected concepts properly, give practical exercises and end each checkpoint with a coding challenge before advancing.
 
 ## Progress tracking
 

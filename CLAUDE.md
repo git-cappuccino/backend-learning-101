@@ -43,7 +43,7 @@ In particular:
 - Explain the problem, mental model, practical behavior, important parameters, realistic code and common mistakes.
 - Use diagrams when they improve understanding.
 - Provide incremental exercises and let me attempt them before revealing full solutions.
-- Check my understanding at meaningful checkpoints.
+- End each meaningful checkpoint with a coding challenge, not understanding-check questions.
 - Do not automatically advance when an explanation ends.
 - Do not mark a skill as verified without actual evidence.
 

@@ -48,14 +48,21 @@ At the end of each meaningful checkpoint:
 - State what we covered.
 - State what remains in the current topic.
 - State what comes next.
-- Ask a focused question to check my understanding.
-- Wait for my response before advancing.
+- Give a coding challenge (see below).
+- Wait for my submission before advancing, unless I say to continue.
 
 Use the checkpoint format in section 13.
 
-Understanding checks test the code and logic I am learning: types, runtime behaviour, control flow, error paths and design decisions. Do not ask me to trace tests in an understanding check, for example which test would fail, which test would catch an invalid value or what a test run would report. I still write tests in exercises; review them as part of the exercise and explain any gaps in the review rather than turning them into questions.
+Do not ask understanding-check questions. Coding challenges replace them, so that concepts are solidified through hands-on practice. A coding challenge:
 
-If I ask a follow-up question, remain on the current concept until it is resolved. If I reveal a misunderstanding, explain it and check again.
+- Is smaller than an exercise (about 15–30 minutes) and builds on the existing exercise code.
+- States its objective, expected behaviour and acceptance criteria, like an exercise.
+- Is designed so that a misconception produces wrong code, a failing type check or a wrongly pinned behaviour, rather than code that works by accident. Prefer failure scenarios, error paths and compile-time versus runtime contrasts: `@ts-expect-error` lines prove what the compiler rejects, and tests pin what actually happens at runtime.
+- Uses only concepts already taught.
+
+I still write tests in exercises and challenges; review them and explain any gaps in the review.
+
+If I ask a follow-up question, remain on the current concept until it is resolved. If my code reveals a misunderstanding, explain it in the review and let me fix it.
 
 Do not ask for confirmation after every paragraph. Use meaningful checkpoints that allow the concept to develop naturally.
 
@@ -76,7 +83,7 @@ For each important concept, explain the relevant parts in a natural sequence:
 7. **When to use it:** Explain common use cases and when it is unnecessary.
 8. **Common mistakes:** Explain likely errors, misconceptions and relevant edge cases.
 9. **Best practices:** Explain the approach I should use in professional development.
-10. **Understanding check:** Ask a question that tests comprehension rather than simple recall.
+10. **Coding challenge:** A short hands-on task that applies the concept in a new situation (see section 3).
 
 Use medium technical language. Explain unfamiliar terminology the first time it appears.
 
@@ -216,7 +223,7 @@ Maintain the distinction between these learning stages, recorded with the status
 
 - Explained: I have received the explanation, but not practiced it → status **In progress**.
 - Practiced: I have attempted the relevant implementation or exercise → status **Practiced**.
-- Verified: I have demonstrated sufficient understanding through an explanation, practical work or assessment → status **Verified**.
+- Verified: I have demonstrated sufficient understanding through practical work: the topic's exercises and coding challenges meet their acceptance criteria when reviewed → status **Verified**.
 
 At the end of each substantive learning session, record the topics covered, exercises attempted, assessment evidence, misconceptions, unresolved questions and next checkpoint.
 
@@ -247,7 +254,7 @@ At the end of a meaningful checkpoint, state:
 
 **Next:** The next concept.
 
-**Understanding check:** A focused question, followed by a pause for my response.
+**Coding challenge:** A short hands-on task, followed by a pause for my submission.
 
 At the end of a substantive session, summarize actual progress using this format:
 
