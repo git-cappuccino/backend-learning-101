@@ -60,6 +60,25 @@ export const safeParseTitle = (
   return ok(title);
 };
 
+export const safeParseAssigneeId = (
+  input: string,
+): Result<string, ValidationError> => {
+  const normalisedId = input.trim();
+  if (!normalisedId) {
+    return err(new ValidationError(`Assignee ID cannot be blank`));
+  }
+  return ok(normalisedId);
+};
+
+export const safeParseEstimate = (
+  estimate: number,
+): Result<number, ValidationError> => {
+  if (!Number.isFinite(estimate) || estimate <= 0) {
+    return err(new ValidationError("Estimate must be a positive number"));
+  }
+  return ok(estimate);
+};
+
 export const getTaskOrThrow = (tasks: Task[], id: string): Task => {
   const taskToFetch = tasks.find((task) => task.id === id);
   if (!taskToFetch) {

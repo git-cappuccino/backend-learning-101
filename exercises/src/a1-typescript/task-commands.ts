@@ -1,8 +1,9 @@
 import { assertNever } from "./assert-never.js";
-import { ValidationError } from "./errors.js";
 import { getOrThrow } from "./result.js";
 import {
   changeStatus,
+  safeParseAssigneeId,
+  safeParseEstimate,
   safeParseTitle,
   Task,
   TaskStatus,
@@ -42,10 +43,7 @@ export const applyCommand = (task: Task, command: TaskCommand): Task => {
     }
 
     case "assign": {
-      const newAssigneeId = command.assigneeId.trim();
-      if (!newAssigneeId) {
-        throw new ValidationError("Assignee ID cannot be blank");
-      }
+      const newAssigneeId = getOrThrow(safeParseAssigneeId(command.assigneeId));
       return { ...task, assigneeId: newAssigneeId };
     }
 
@@ -59,11 +57,7 @@ export const applyCommand = (task: Task, command: TaskCommand): Task => {
     }
 
     case "estimate": {
-      const estimateHours = command.hours;
-      const isValid = Number.isFinite(estimateHours) && estimateHours > 0;
-      if (!isValid) {
-        throw new ValidationError("Estimate must be a positive number");
-      }
+      const estimateHours = getOrThrow(safeParseEstimate(command.hours));
       return {
         ...task,
         estimateHours,

@@ -9,6 +9,8 @@ import {
   isTaskStatus,
   keepValidStatuses,
   parseStatus,
+  safeParseAssigneeId,
+  safeParseEstimate,
   safeParseStatus,
   safeParseTitle,
   type Task,
@@ -405,6 +407,75 @@ describe("safeParseTitle", () => {
     expect(result).toEqual({
       ok: true,
       value: "Write docs",
+    });
+  });
+});
+
+describe("safeParseAssigneeId", () => {
+  it("returns the ValidationError result for blank assignee id", () => {
+    const result = safeParseAssigneeId("");
+    expect(result).toEqual({
+      ok: false,
+      error: new ValidationError(`Assignee ID cannot be blank`),
+    });
+  });
+  it("returns the ValidationError result if assignee id is only whitepaces", () => {
+    const result = safeParseAssigneeId("  ");
+    expect(result).toEqual({
+      ok: false,
+      error: new ValidationError(`Assignee ID cannot be blank`),
+    });
+  });
+  it("returns the success result for a valid assignee id", () => {
+    const result = safeParseAssigneeId("piyush");
+    expect(result).toEqual({
+      ok: true,
+      value: "piyush",
+    });
+  });
+  it("removes the whitespaces around assignee id and returns the success result", () => {
+    const result = safeParseAssigneeId(" piyush  ");
+    expect(result).toEqual({
+      ok: true,
+      value: "piyush",
+    });
+  });
+});
+
+describe("safeParseEstimate", () => {
+  it("returns the ValidationError result if estimate hours are less than 0", () => {
+    const result = safeParseEstimate(-10);
+    expect(result).toEqual({
+      ok: false,
+      error: new ValidationError("Estimate must be a positive number"),
+    });
+  });
+  it("returns the ValidationError result if estimate hours is 0", () => {
+    const result = safeParseEstimate(0);
+    expect(result).toEqual({
+      ok: false,
+      error: new ValidationError("Estimate must be a positive number"),
+    });
+  });
+  it("returns the ValidationError result if estimate hours is NaN", () => {
+    const result = safeParseEstimate(NaN);
+    expect(result).toEqual({
+      ok: false,
+      error: new ValidationError("Estimate must be a positive number"),
+    });
+  });
+  it("returns the ValidationError result if estimate hours is +Infinity", () => {
+    const result = safeParseEstimate(Infinity);
+    expect(result).toEqual({
+      ok: false,
+      error: new ValidationError("Estimate must be a positive number"),
+    });
+  });
+  it("returns the ValidationError result if estimate hours is -Infinity", () => {
+    const result = safeParseEstimate(-Infinity);
+    expect(result).toEqual({
+      ok: false,
+      error: new ValidationError("Estimate must be a positive number"),
     });
   });
 });
