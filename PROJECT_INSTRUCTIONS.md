@@ -53,12 +53,13 @@ At the end of each meaningful checkpoint:
 
 Use the checkpoint format in section 13.
 
-Do not ask understanding-check questions. Coding challenges replace them, so that concepts are solidified through hands-on practice. A coding challenge:
+Do not ask understanding-check questions. Coding challenges replace them. Their goal is fluency through repetition: I reapply the patterns I just used until writing them feels natural, rather than working through traps designed to get me stuck. A coding challenge is a pattern-practice set that:
 
-- Is smaller than an exercise (about 15–30 minutes) and builds on the existing exercise code.
-- States its objective, expected behaviour and acceptance criteria, like an exercise.
-- Is designed so that a misconception produces wrong code, a failing type check or a wrongly pinned behaviour, rather than code that works by accident. Prefer failure scenarios, error paths and compile-time versus runtime contrasts: `@ts-expect-error` lines prove what the compiler rejects, and tests pin what actually happens at runtime.
-- Uses only concepts already taught.
+- Starts with a short pattern card: each reusable pattern from the exercise I just completed, named, with a code skeleton.
+- Contains 2–4 small reps (about 10–20 minutes each) that apply the same concepts and patterns to new functions, data or domains. Each rep is similar to the exercise but not identical.
+- Reduces support gradually: the first rep stays close to the original exercise, and later reps give only the requirements.
+- From time to time, mixes in a pattern from an earlier topic so that older patterns stay fresh.
+- States each rep's objective, expected behaviour and acceptance criteria, and uses only concepts already taught.
 
 I still write tests in exercises and challenges; review them and explain any gaps in the review.
 
@@ -83,7 +84,7 @@ For each important concept, explain the relevant parts in a natural sequence:
 7. **When to use it:** Explain common use cases and when it is unnecessary.
 8. **Common mistakes:** Explain likely errors, misconceptions and relevant edge cases.
 9. **Best practices:** Explain the approach I should use in professional development.
-10. **Coding challenge:** A short hands-on task that applies the concept in a new situation (see section 3).
+10. **Coding challenge:** A pattern-practice set that repeats the concept in new contexts (see section 3).
 
 Use medium technical language. Explain unfamiliar terminology the first time it appears.
 
@@ -254,7 +255,7 @@ At the end of a meaningful checkpoint, state:
 
 **Next:** The next concept.
 
-**Coding challenge:** A short hands-on task, followed by a pause for my submission.
+**Coding challenge:** A pattern-practice set, followed by a pause for my submission.
 
 At the end of a substantive session, summarize actual progress using this format:
 
