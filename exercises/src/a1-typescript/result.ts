@@ -18,6 +18,23 @@ export const getOrThrow = <T, E>(result: Result<T, E>): T => {
   return result.value;
 };
 
+export const getOrElse = <T, E>(result: Result<T, E>, fallback: T): T => {
+  if (!result.ok) {
+    return fallback;
+  }
+  return result.value;
+};
+
+export const mapError = <T, E, F>(
+  result: Result<T, E>,
+  fn: (error: E) => F,
+): Result<T, F> => {
+  if (!result.ok) {
+    return err(fn(result.error));
+  }
+  return result;
+};
+
 export const mapResult = <T, U, E>(
   result: Result<T, E>,
   fn: (value: T) => U,

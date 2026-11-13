@@ -5,7 +5,15 @@ import {
   TaskStatus,
 } from "./task-utils.js";
 import { ValidationError } from "./errors.js";
-import { err, getOrThrow, mapResult, ok, Result } from "./result.js";
+import {
+  err,
+  getOrElse,
+  getOrThrow,
+  mapError,
+  mapResult,
+  ok,
+  Result,
+} from "./result.js";
 import { TaskCommand } from "./task-commands.js";
 
 describe("ok", () => {
@@ -79,6 +87,54 @@ describe("getOrThrow", () => {
     } catch (error) {
       expect(error).toBe(result.error);
     }
+  });
+});
+
+describe("getOrElse", () => {
+  it("returns the value when result is success", () => {
+    const status = getOrElse(safeParseStatus("in_progress"), "todo");
+    expect(status).toBe("in_progress");
+  });
+
+  it("returns the fallback value when result is failure", () => {
+    const status = getOrElse(safeParseStatus("archived"), "todo");
+    expect(status).toBe("todo");
+  });
+});
+
+describe("mapError", () => {
+  it("maps the error to the output of passed function", () => {
+    const result = mapError(
+      safeParseStatus("archived"),
+      (error) => error.message,
+    );
+    expect(result).toEqual({
+      ok: false,
+      error: `Invalid status "archived". Allowed: todo, in_progress, done, blocked`,
+    });
+  });
+  it("returns the same result when success", () => {
+    const result = mapError(
+      safeParseStatus("blocked"),
+      (error) => error.message,
+    );
+    expect(result).toEqual({
+      ok: true,
+      value: "blocked",
+    });
+  });
+  it("doesn't map the passed function to the value in success result", () => {
+    const fn = vi.fn();
+    mapError(safeParseStatus("done"), fn);
+    expect(fn).not.toHaveBeenCalled();
+  });
+  it("retruns the same instance without mutations if the result is success", () => {
+    const result = safeParseStatus("blocked");
+    const resultCopy = { ...result };
+    const fn = vi.fn();
+    const mappedResult = mapError(result, fn);
+    expect(mappedResult).toBe(result);
+    expect(mappedResult).toEqual(resultCopy);
   });
 });
 
