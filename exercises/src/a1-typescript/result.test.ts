@@ -2,7 +2,7 @@ import { describe, expect, it, vi } from "vitest";
 import {
   ALLOWED_TRANSITIONS,
   safeParseStatus,
-  TaskStatus,
+  type TaskStatus,
 } from "./task-utils.js";
 import { ValidationError } from "./errors.js";
 import {
@@ -12,6 +12,7 @@ import {
   mapError,
   mapResult,
   ok,
+  parseAll,
   Result,
 } from "./result.js";
 import { TaskCommand } from "./task-commands.js";
@@ -188,5 +189,40 @@ describe("mapResult", () => {
     const parseResult = safeParseStatus("archived");
     mapResult(parseResult, mockFn);
     expect(mockFn).not.toHaveBeenCalled();
+  });
+});
+
+describe("parseAll", () => {
+  it("returns the success result with a list of parsed inputs if all inputs are valid", () => {
+    const validStatusList = ["blocked", "todo", "done"];
+    const result = parseAll(validStatusList, safeParseStatus);
+    expect(result).toEqual({
+      ok: true,
+      value: validStatusList,
+    });
+  });
+  it("short circuits on failure and returns it", () => {
+    const mixedStatusList = ["blocked", "todo", "archived", "done"];
+    const spyParser = vi.fn(safeParseStatus);
+    const result = parseAll(mixedStatusList, spyParser);
+    expect(spyParser).toHaveBeenCalledTimes(3);
+    expect(spyParser).toHaveBeenNthCalledWith(1, "blocked");
+    expect(spyParser).toHaveBeenNthCalledWith(2, "todo");
+    expect(spyParser).toHaveBeenNthCalledWith(3, "archived");
+    expect(result).toEqual({
+      ok: false,
+      error: new ValidationError(
+        `Invalid status "archived". Allowed: todo, in_progress, done, blocked`,
+      ),
+    });
+  });
+  it("returns an empty array result when given no inputs", () => {
+    const spyParser = vi.fn(safeParseStatus);
+    const result = parseAll([], spyParser);
+    expect(spyParser).not.toHaveBeenCalled();
+    expect(result).toEqual({
+      ok: true,
+      value: [],
+    });
   });
 });

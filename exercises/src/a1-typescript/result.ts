@@ -44,3 +44,18 @@ export const mapResult = <T, U, E>(
   }
   return result;
 };
+
+export const parseAll = <T, E>(
+  inputs: readonly string[],
+  parse: (input: string) => Result<T, E>,
+): Result<T[], E> => {
+  const arr: T[] = [];
+  for (const input of inputs) {
+    const result = parse(input);
+    if (!result.ok) {
+      return err(result.error);
+    }
+    arr.push(result.value);
+  }
+  return ok(arr);
+};
