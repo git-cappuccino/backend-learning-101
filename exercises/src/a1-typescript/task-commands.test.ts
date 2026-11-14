@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
-import { applyCommand, TaskCommand } from "./task-commands.js";
-import { Task } from "./task-utils.js";
+import { applyCommand, type TaskCommand } from "./task-commands.js";
+import { type Task } from "./task-utils.js";
 import { ConflictError, ValidationError } from "./errors.js";
 
 describe("applyCommand", () => {

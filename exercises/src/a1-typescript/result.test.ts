@@ -216,6 +216,13 @@ describe("parseAll", () => {
       ),
     });
   });
+  it("returns the first failure exactly as received (same instance)", () => {
+    const failure = err(new ValidationError("bad input"));
+    const parser = (input: string): Result<string, ValidationError> =>
+      input === "bad" ? failure : ok(input);
+    const result = parseAll(["a", "bad", "c"], parser);
+    expect(result).toBe(failure);
+  });
   it("returns an empty array result when given no inputs", () => {
     const spyParser = vi.fn(safeParseStatus);
     const result = parseAll([], spyParser);
