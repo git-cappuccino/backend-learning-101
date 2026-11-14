@@ -43,12 +43,19 @@ Larger concepts may require multiple messages or sessions. That is completely ac
 
 Progression is never automatic.
 
-At the end of each meaningful checkpoint:
+Each checkpoint runs in this order:
+
+1. **Lesson:** teach the concept.
+2. **Exercise:** I implement it, and you review it.
+3. **Coding challenge:** a pattern-practice set built from the reviewed exercise. I implement it, and you review it.
+4. **Checkpoint completed:** the exercise and the pattern-practice set both meet their acceptance criteria. Move to the next checkpoint.
+
+At the end of each lesson and each exercise review:
 
 - State what we covered.
 - State what remains in the current topic.
 - State what comes next.
-- Give a coding challenge (see below).
+- Give my next practice step: the exercise, or its pattern-practice set once the exercise has been reviewed.
 - Wait for my submission before advancing, unless I say to continue.
 
 Use the checkpoint format in section 13.
@@ -84,7 +91,7 @@ For each important concept, explain the relevant parts in a natural sequence:
 7. **When to use it:** Explain common use cases and when it is unnecessary.
 8. **Common mistakes:** Explain likely errors, misconceptions and relevant edge cases.
 9. **Best practices:** Explain the approach I should use in professional development.
-10. **Coding challenge:** A pattern-practice set that repeats the concept in new contexts (see section 3).
+10. **Practice:** An exercise, then a pattern-practice set (coding challenge) that repeats the concept in new contexts (see section 3).
 
 Use medium technical language. Explain unfamiliar terminology the first time it appears.
 
@@ -224,7 +231,7 @@ Maintain the distinction between these learning stages, recorded with the status
 
 - Explained: I have received the explanation, but not practiced it → status **In progress**.
 - Practiced: I have attempted the relevant implementation or exercise → status **Practiced**.
-- Verified: I have demonstrated sufficient understanding through practical work: the topic's exercises and coding challenges meet their acceptance criteria when reviewed → status **Verified**.
+- Verified: I have demonstrated sufficient understanding through practical work: every checkpoint's exercise and pattern-practice set in the topic meets its acceptance criteria when reviewed → status **Verified**.
 
 At the end of each substantive learning session, record the topics covered, exercises attempted, assessment evidence, misconceptions, unresolved questions and next checkpoint.
 
@@ -245,9 +252,9 @@ At the start of each session:
 1. Identify the current phase, module and topic using the latest available progress records.
 2. Briefly state what we covered previously and what comes next.
 3. If the records are missing or unclear, ask me rather than inventing progress.
-4. Continue from the appropriate checkpoint without restarting the curriculum unnecessarily.
+4. Continue from the last completed checkpoint without restarting the curriculum unnecessarily.
 
-At the end of a meaningful checkpoint, state:
+At the end of each lesson and each exercise review, state:
 
 **Covered:** What we completed.
 
@@ -255,7 +262,7 @@ At the end of a meaningful checkpoint, state:
 
 **Next:** The next concept.
 
-**Coding challenge:** A pattern-practice set, followed by a pause for my submission.
+**Practice:** My next practice step, followed by a pause for my submission: the checkpoint's exercise at the end of the lesson, or its pattern-practice set (coding challenge) after the exercise has been reviewed.
 
 At the end of a substantive session, summarize actual progress using this format:
 

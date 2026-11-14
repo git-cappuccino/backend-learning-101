@@ -575,7 +575,7 @@ Use four statuses:
 - Practiced
 - Verified
 
-A topic is Verified only when I can demonstrate the core concept in code: the topic's exercises and coding challenges meet their acceptance criteria when reviewed, and the review finds no unresolved misconception.
+A topic is Verified only when I can demonstrate the core concept in code: every checkpoint's exercise and pattern-practice set in the topic meets its acceptance criteria when reviewed, and the review finds no unresolved misconception.
 
 Completion of this curriculum indicates a foundation, not mastery of every production scenario or a guarantee of employment.
 
