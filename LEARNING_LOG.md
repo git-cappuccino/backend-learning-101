@@ -110,6 +110,18 @@
 - Not verified by the reviewer: Vitest was not run (dependency install unavailable). Type checks of the source files used TypeScript 6.0.2, not the pinned 6.0.3. The learner reported `npm run check` passed for 90db72a: 4 test files, 84/84 tests.
 - Next checkpoint: TS-04 checkpoint 1 (generic functions and types, starting from `StatusParseResult` → `Result<T, E>`).
 
+### 2026-11-06 to 2026-11-14 — Session 6: TS-04 checkpoint 1, Exercise 6 and pattern practice
+
+- Topics: TS-04 checkpoint 1 (TS-04 now Practiced), TEST-01 practice.
+- Concepts taught: generic types as types with parameters (`Result<T, E>`, instantiation, TS2314, defaults); generic functions `ok`, `err`, `getOrThrow`; `never` as the empty set in the unused slot; type-argument inference and when to write type arguments; type parameters are erased at runtime; a type parameter should appear at least twice, and one used only in the return type acts as a cast (`parseJson<T>`); `any` versus a type parameter; TS2339 on properties of an unconstrained `T`; `<T,>` in `.tsx` files.
+- Practical work: Exercise 6, commits 254d4b5 → 1cde55b. `result.ts`; `safeParseStatus` returns `Result<TaskStatus, ValidationError>`; `StatusParseResult` deleted rather than aliased (reason in the commit message); `parseStatus` uses `getOrThrow`; `safeParseTitle` used by `createTask` and `rename`; stretch `mapResult` passes the failure branch through with `return result`.
+- Practical work: pattern-practice set, commits 5fb41d6 → 70522aa. Rep 1: `safeParseAssigneeId` and `safeParseEstimate` used through `getOrThrow` in `applyCommand`. Rep 2: `task-comments.ts` with `safeParseCommentBody` (blank and 500-character rules), `safeParseCommentId` and `createComment`. Rep 3: `getOrElse` and `mapError`. Rep 4: `parseAll` (first failure returned unchanged; later inputs not parsed). On own initiative: enabled `verbatimModuleSyntax` and converted type-only imports to `type` imports; used the indexed access type `Task["id"]` (checkpoint 2 material).
+- Review findings (not required to fix): Exercise 6 used value imports for types (fixed in the practice set); lockfile updates were committed with exercise code. Practice set: `createComment` has only a happy-path test (no tests for a blank ID, a blank or over-long body, or ID trimming); `getOrElse`'s `TaskStatus` result type is not pinned by a typed variable.
+- Assessment: no understanding checks (see the 2026-11-11 and 2026-11-12 decisions). Evidence is the reviewed code of Exercise 6 and all four reps, which meet their acceptance criteria. The carried-forward weak area (keeping compile-time and runtime explanations separate) had no new evidence this session.
+- Decisions: understanding checks replaced by coding challenges (2026-11-11), redesigned as pattern-practice sets (2026-11-12); see Learning decisions. The `parseJson` challenge was withdrawn.
+- Not verified by the reviewer: Vitest was not run (dependency install unavailable). Source and test files were type-checked with TypeScript 6.0.3, with Vitest types stubbed. The learner reported `npm run check` passed for 1cde55b (5 test files, 100/100 tests); and for 70522aa on 2026-11-14 (6 test files, 127/127 tests).
+- Next checkpoint: TS-04 checkpoint 2 (constraints with `extends`, `keyof`, indexed access `T[K]`).
+
 ## Recording rules
 
 For each substantive session, record:
