@@ -1,5 +1,5 @@
 import { ConflictError, NotFoundError, ValidationError } from "./errors.js";
-import { err, getOrThrow, ok, Result } from "./result.js";
+import { err, getOrThrow, ok, type Result } from "./result.js";
 
 export const TASK_STATUSES = [
   "todo",

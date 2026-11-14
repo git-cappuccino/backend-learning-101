@@ -1,7 +1,11 @@
 import { describe, expect, it } from "vitest";
-import { createComment, safeParseCommentBody } from "./task-comments.js";
+import {
+  COMMENT_MAX_LENGTH,
+  createComment,
+  safeParseCommentBody,
+} from "./task-comments.js";
 import { ValidationError } from "./errors.js";
-import { Task } from "./task-utils.js";
+import { type Task } from "./task-utils.js";
 
 describe("safeParseCommentBody", () => {
   it("returns the ValidationError result if comment is blank", () => {
@@ -26,7 +30,7 @@ describe("safeParseCommentBody", () => {
     });
   });
   it("returns the ValidationError result if the comment is more than 500 characters", () => {
-    const comment = "a".repeat(501);
+    const comment = "a".repeat(COMMENT_MAX_LENGTH + 1);
     const result = safeParseCommentBody(comment);
     expect(result).toEqual({
       ok: false,
@@ -34,7 +38,7 @@ describe("safeParseCommentBody", () => {
     });
   });
   it("returns the success result when the comment length is exactly 500 characters", () => {
-    const comment = "a".repeat(500);
+    const comment = "a".repeat(COMMENT_MAX_LENGTH);
     const result = safeParseCommentBody(comment);
     expect(result).toEqual({
       ok: true,
@@ -42,7 +46,7 @@ describe("safeParseCommentBody", () => {
     });
   });
   it("returns the success result if the comment length is 500 with whitespaces removed from edges", () => {
-    const validComment = "a".repeat(500);
+    const validComment = "a".repeat(COMMENT_MAX_LENGTH);
     const commentWithSpaces = ` ${validComment} `;
     const result = safeParseCommentBody(commentWithSpaces);
     expect(result).toEqual({

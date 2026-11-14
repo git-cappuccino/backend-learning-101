@@ -13,9 +13,9 @@ import {
   mapResult,
   ok,
   parseAll,
-  Result,
+  type Result,
 } from "./result.js";
-import { TaskCommand } from "./task-commands.js";
+import { type TaskCommand } from "./task-commands.js";
 
 describe("ok", () => {
   it("returns the input value wrapped in an object with ok as true", () => {

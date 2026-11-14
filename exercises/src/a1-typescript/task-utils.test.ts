@@ -443,6 +443,13 @@ describe("safeParseAssigneeId", () => {
 });
 
 describe("safeParseEstimate", () => {
+  it("returns the success result if estimate is a valid number", () => {
+    const result = safeParseEstimate(6);
+    expect(result).toEqual({
+      ok: true,
+      value: 6,
+    });
+  });
   it("returns the ValidationError result if estimate hours are less than 0", () => {
     const result = safeParseEstimate(-10);
     expect(result).toEqual({

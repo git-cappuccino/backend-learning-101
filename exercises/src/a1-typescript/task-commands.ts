@@ -5,8 +5,8 @@ import {
   safeParseAssigneeId,
   safeParseEstimate,
   safeParseTitle,
-  Task,
-  TaskStatus,
+  type Task,
+  type TaskStatus,
 } from "./task-utils.js";
 
 export type TaskCommand =

@@ -1,14 +1,14 @@
 import { ValidationError } from "./errors.js";
-import { err, getOrThrow, ok, Result } from "./result.js";
+import { err, getOrThrow, ok, type Result } from "./result.js";
 import { type Task } from "./task-utils.js";
 
-interface TaskComment {
+export interface TaskComment {
   id: string;
   taskId: Task["id"];
   body: string;
 }
 
-const COMMENT_MAX_LENGTH = 500;
+export const COMMENT_MAX_LENGTH = 500;
 
 export const safeParseCommentBody = (
   input: string,
@@ -19,7 +19,9 @@ export const safeParseCommentBody = (
   }
   if (normalisedComment.length > COMMENT_MAX_LENGTH) {
     return err(
-      new ValidationError("Comment body cannot exceed 500 characters"),
+      new ValidationError(
+        `Comment body cannot exceed ${COMMENT_MAX_LENGTH} characters`,
+      ),
     );
   }
   return ok(normalisedComment);

@@ -53,7 +53,7 @@ export const parseAll = <T, E>(
   for (const input of inputs) {
     const result = parse(input);
     if (!result.ok) {
-      return err(result.error);
+      return result;
     }
     arr.push(result.value);
   }
