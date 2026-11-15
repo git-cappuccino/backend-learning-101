@@ -11,7 +11,7 @@ export type Result<T, E> =
 export const ok = <T>(value: T): Result<T, never> => ({ ok: true, value });
 export const err = <E>(error: E): Result<never, E> => ({ ok: false, error });
 
-export const getOrThrow = <T, E>(result: Result<T, E>): T => {
+export const getOrThrow = <T, E extends Error>(result: Result<T, E>): T => {
   if (!result.ok) {
     throw result.error;
   }

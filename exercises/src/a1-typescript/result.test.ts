@@ -89,6 +89,11 @@ describe("getOrThrow", () => {
       expect(error).toBe(result.error);
     }
   });
+  it("throws", () => {
+    // @ts-expect-error: invalid type
+    const getOrThrowFn = () => getOrThrow(err("plain string"));
+    expect(getOrThrowFn).toThrow();
+  });
 });
 
 describe("getOrElse", () => {
