@@ -1,4 +1,5 @@
-import { ConflictError, NotFoundError, ValidationError } from "./errors.js";
+import { getByIdOrThrow } from "./collection-utils.js";
+import { ConflictError, ValidationError } from "./errors.js";
 import { err, getOrThrow, ok, type Result } from "./result.js";
 
 export const TASK_STATUSES = [
@@ -79,13 +80,8 @@ export const safeParseEstimate = (
   return ok(estimate);
 };
 
-export const getTaskOrThrow = (tasks: Task[], id: string): Task => {
-  const taskToFetch = tasks.find((task) => task.id === id);
-  if (!taskToFetch) {
-    throw new NotFoundError("Task", id);
-  }
-  return taskToFetch;
-};
+export const getTaskOrThrow = (tasks: Task[], id: string): Task =>
+  getByIdOrThrow(tasks, id, "Task");
 
 export const changeStatus = (task: Task, next: TaskStatus): Task => {
   const existingStatus = task.status;

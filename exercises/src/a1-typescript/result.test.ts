@@ -89,8 +89,8 @@ describe("getOrThrow", () => {
       expect(error).toBe(result.error);
     }
   });
-  it("throws", () => {
-    // @ts-expect-error: invalid type
+  it("failed result still throws when the type check is bypassed", () => {
+    // @ts-expect-error: getOrThrow only accepts Results whose error is an Error (string is not)
     const getOrThrowFn = () => getOrThrow(err("plain string"));
     expect(getOrThrowFn).toThrow();
   });
