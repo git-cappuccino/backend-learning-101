@@ -52,10 +52,11 @@ describe("getByIdOrThrow", () => {
     expect(getByIdOrThrowFn).toThrow(`Tag LBL-03 not found`);
   });
   it("throws a NotFoundError with status 404 when item is not found in list", () => {
-    expect.assertions(1);
+    expect.assertions(2);
     try {
       getByIdOrThrow(tasks, "TS-06", "Task");
     } catch (error) {
+      expect(error).toBeInstanceOf(NotFoundError);
       expect(error).toMatchObject({
         statusCode: 404,
         code: "RESOURCE_NOT_FOUND",

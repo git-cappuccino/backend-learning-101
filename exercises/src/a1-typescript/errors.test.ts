@@ -10,9 +10,9 @@ import {
 describe("ValidationError", () => {
   it("is instanceof ValidationError, AppError and Error", () => {
     const error = new ValidationError("invalid input");
-    expect(error).instanceof(Error);
-    expect(error).instanceOf(AppError);
-    expect(error).instanceof(ValidationError);
+    expect(error).toBeInstanceOf(Error);
+    expect(error).toBeInstanceOf(AppError);
+    expect(error).toBeInstanceOf(ValidationError);
   });
   it("has the correct name, statusCode and code", () => {
     const error = new ValidationError("invalid input");
@@ -30,9 +30,9 @@ describe("ValidationError", () => {
 describe("NotFoundError", () => {
   it("is instanceof NotFoundError, AppError and Error", () => {
     const notFoundError = new NotFoundError("Task", "42");
-    expect(notFoundError).instanceof(NotFoundError);
-    expect(notFoundError).instanceof(AppError);
-    expect(notFoundError).instanceOf(Error);
+    expect(notFoundError).toBeInstanceOf(NotFoundError);
+    expect(notFoundError).toBeInstanceOf(AppError);
+    expect(notFoundError).toBeInstanceOf(Error);
   });
   it("has the correct name, statusCode and code", () => {
     const notFoundError = new NotFoundError("Task", "42");
