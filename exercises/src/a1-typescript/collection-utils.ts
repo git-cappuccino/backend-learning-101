@@ -19,3 +19,13 @@ export const filterBy = <T, K extends keyof T>(
 ): T[] => {
   return items.filter((item) => item[key] === value);
 };
+
+export const countBy = <T, K extends keyof T>(
+  items: readonly T[],
+  key: K,
+): Map<T[K], number> =>
+  items.reduce((acc, current) => {
+    const count = acc.get(current[key]) ?? 0;
+    acc.set(current[key], count + 1);
+    return acc;
+  }, new Map<T[K], number>());

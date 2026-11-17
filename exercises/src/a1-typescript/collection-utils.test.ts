@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { filterBy, getByIdOrThrow } from "./collection-utils.js";
+import { countBy, filterBy, getByIdOrThrow } from "./collection-utils.js";
 import type { Task } from "./task-utils.js";
 import { NotFoundError } from "./errors.js";
 import type { TaskComment } from "./task-comments.js";
@@ -204,5 +204,77 @@ describe("filterBy", () => {
     // @ts-expect-error: intentionally passed invalid value for the key
     const filteredItems = filterBy(tasks, "status", "archived");
     expect(filteredItems).toEqual([]);
+  });
+});
+
+describe("countBy", () => {
+  const tasks: Task[] = [
+    {
+      id: "TS 01",
+      status: "done",
+      title: "Type Erasure in TS",
+    },
+    {
+      id: "TS 02",
+      status: "in_progress",
+      title: "Interface in TS",
+      assigneeId: "emp-03",
+    },
+    {
+      id: "TS 03",
+      status: "todo",
+      title: "unknown type in TS",
+    },
+    {
+      id: "TS 04",
+      status: "todo",
+      title: "satisfies in TS",
+    },
+    {
+      id: "TS 05",
+      status: "todo",
+      title: "Readonly in TS",
+      assigneeId: undefined,
+    },
+  ];
+  it("counts tasks grouped by status", () => {
+    const result = countBy(tasks, "status");
+    expect([...result]).toEqual([
+      ["done", 1],
+      ["in_progress", 1],
+      ["todo", 3],
+    ]);
+  });
+  it("returns an empty Map when given an empty list of items", () => {
+    const result = countBy([], "status");
+    expect([...result]).toEqual([]);
+  });
+  it("doesn't mutate the input list of items", () => {
+    const taskCopy = [...tasks];
+    countBy(tasks, "status");
+    expect(tasks).toEqual(taskCopy);
+  });
+  it("counts optional keys and groups missing or undefined values together", () => {
+    const result = countBy(tasks, "assigneeId");
+    expect([...result]).toEqual([
+      [undefined, 4],
+      ["emp-03", 1],
+    ]);
+  });
+  it("returns a single entry when all items share the same key value", () => {
+    const pendingTasks: Task[] = [
+      {
+        id: "TS 01",
+        status: "todo",
+        title: "unknown type in TS",
+      },
+      {
+        id: "TS 02",
+        status: "todo",
+        title: "satisfies in TS",
+      },
+    ];
+    const result = countBy(pendingTasks, "status");
+    expect([...result]).toEqual([["todo", 2]]);
   });
 });
