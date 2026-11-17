@@ -88,6 +88,12 @@ describe("filterBy", () => {
       status: "todo",
       title: "satisfies in TS",
     },
+    {
+      id: "TS 05",
+      status: "todo",
+      title: "Readonly in TS",
+      assigneeId: undefined,
+    },
   ];
   const commentsList: TaskComment[] = [
     {
@@ -103,9 +109,9 @@ describe("filterBy", () => {
     },
     { id: "C-04", body: "Issue marked as closed", taskId: "TS-02" },
   ];
-  it("filters the ietms from a list having a particular value of the given key", () => {
+  it("filters the items from a list having a particular value of the given key", () => {
     const pendingTasks = filterBy(tasks, "status", "todo");
-    expect(pendingTasks).toHaveLength(2);
+    expect(pendingTasks).toHaveLength(3);
     expect(pendingTasks[0]).toEqual({
       id: "TS 03",
       status: "todo",
@@ -115,6 +121,12 @@ describe("filterBy", () => {
       id: "TS 04",
       status: "todo",
       title: "satisfies in TS",
+    });
+    expect(pendingTasks[2]).toEqual({
+      id: "TS 05",
+      status: "todo",
+      title: "Readonly in TS",
+      assigneeId: undefined,
     });
 
     const emp3Tasks = filterBy(tasks, "assigneeId", "emp-03");
@@ -128,7 +140,7 @@ describe("filterBy", () => {
   });
   it("filters the items from the list with optional or missing keys", () => {
     const unAssignedTasks = filterBy(tasks, "assigneeId", undefined);
-    expect(unAssignedTasks).toHaveLength(3);
+    expect(unAssignedTasks).toHaveLength(4);
     expect(unAssignedTasks[0]).toEqual({
       id: "TS 01",
       status: "done",
@@ -146,12 +158,23 @@ describe("filterBy", () => {
       status: "todo",
       title: "satisfies in TS",
     });
+    expect(unAssignedTasks[3]).toEqual({
+      id: "TS 05",
+      status: "todo",
+      title: "Readonly in TS",
+      assigneeId: undefined,
+    });
+  });
+  it("returns empty list when the expected value doesn't exist in any list item", () => {
+    const filteredTasks = filterBy(tasks, "title", "Node Basics");
+    expect(filteredTasks).toEqual([]);
   });
   it("returns empty list when the input list is empty", () => {
     const noTaskList: Task[] = [];
     const filteredList = filterBy(noTaskList, "status", "done");
     expect(filteredList).toEqual([]);
   });
+
   it("filters the comments of a given task", () => {
     const filteredComments = filterBy(commentsList, "taskId", "PS-03");
     expect(filteredComments).toHaveLength(2);
@@ -172,7 +195,7 @@ describe("filterBy", () => {
     expect(filteredTasks).not.toBe(tasks);
     expect(tasks).toEqual(tasksCopy);
   });
-  it("returns the empty list for an unknown/non-esisting key in items", () => {
+  it("returns the empty list for an unknown/non-existing key in items", () => {
     // @ts-expect-error: intentionally passed an unknown key
     const filteredTasks = filterBy(tasks, "priority", "low");
     expect(filteredTasks).toEqual([]);

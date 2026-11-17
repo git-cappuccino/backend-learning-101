@@ -13,7 +13,7 @@ export const getByIdOrThrow = <T extends { id: string }>(
 };
 
 export const filterBy = <T, K extends keyof T>(
-  items: T[],
+  items: readonly T[],
   key: K,
   value: T[K],
 ): T[] => {
