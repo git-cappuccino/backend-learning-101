@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { getByIdOrThrow } from "./collection-utils.js";
+import { filterBy, getByIdOrThrow } from "./collection-utils.js";
 import type { Task } from "./task-utils.js";
 import { NotFoundError } from "./errors.js";
 import type { TaskComment } from "./task-comments.js";
@@ -62,5 +62,124 @@ describe("getByIdOrThrow", () => {
         code: "RESOURCE_NOT_FOUND",
       });
     }
+  });
+});
+
+describe("filterBy", () => {
+  const tasks: Task[] = [
+    {
+      id: "TS 01",
+      status: "done",
+      title: "Type Erasure in TS",
+    },
+    {
+      id: "TS 02",
+      status: "in_progress",
+      title: "Interface in TS",
+      assigneeId: "emp-03",
+    },
+    {
+      id: "TS 03",
+      status: "todo",
+      title: "unknown type in TS",
+    },
+    {
+      id: "TS 04",
+      status: "todo",
+      title: "satisfies in TS",
+    },
+  ];
+  const commentsList: TaskComment[] = [
+    {
+      id: "C-01",
+      body: "This is a valid bug in production",
+      taskId: "NODE-01",
+    },
+    { id: "C-02", body: "The task has been reassigned", taskId: "PS-03" },
+    {
+      id: "C-03",
+      body: "The attached files have been deleted",
+      taskId: "PS-03",
+    },
+    { id: "C-04", body: "Issue marked as closed", taskId: "TS-02" },
+  ];
+  it("filters the ietms from a list having a particular value of the given key", () => {
+    const pendingTasks = filterBy(tasks, "status", "todo");
+    expect(pendingTasks).toHaveLength(2);
+    expect(pendingTasks[0]).toEqual({
+      id: "TS 03",
+      status: "todo",
+      title: "unknown type in TS",
+    });
+    expect(pendingTasks[1]).toEqual({
+      id: "TS 04",
+      status: "todo",
+      title: "satisfies in TS",
+    });
+
+    const emp3Tasks = filterBy(tasks, "assigneeId", "emp-03");
+    expect(emp3Tasks).toHaveLength(1);
+    expect(emp3Tasks[0]).toEqual({
+      id: "TS 02",
+      status: "in_progress",
+      title: "Interface in TS",
+      assigneeId: "emp-03",
+    });
+  });
+  it("filters the items from the list with optional or missing keys", () => {
+    const unAssignedTasks = filterBy(tasks, "assigneeId", undefined);
+    expect(unAssignedTasks).toHaveLength(3);
+    expect(unAssignedTasks[0]).toEqual({
+      id: "TS 01",
+      status: "done",
+      title: "Type Erasure in TS",
+    });
+
+    expect(unAssignedTasks[1]).toEqual({
+      id: "TS 03",
+      status: "todo",
+      title: "unknown type in TS",
+    });
+
+    expect(unAssignedTasks[2]).toEqual({
+      id: "TS 04",
+      status: "todo",
+      title: "satisfies in TS",
+    });
+  });
+  it("returns empty list when the input list is empty", () => {
+    const noTaskList: Task[] = [];
+    const filteredList = filterBy(noTaskList, "status", "done");
+    expect(filteredList).toEqual([]);
+  });
+  it("filters the comments of a given task", () => {
+    const filteredComments = filterBy(commentsList, "taskId", "PS-03");
+    expect(filteredComments).toHaveLength(2);
+    expect(filteredComments[0]).toEqual({
+      id: "C-02",
+      body: "The task has been reassigned",
+      taskId: "PS-03",
+    });
+    expect(filteredComments[1]).toEqual({
+      id: "C-03",
+      body: "The attached files have been deleted",
+      taskId: "PS-03",
+    });
+  });
+  it("does not mutate input list and instead returns a new list", () => {
+    const tasksCopy = [...tasks];
+    const filteredTasks = filterBy(tasks, "status", "todo");
+    expect(filteredTasks).not.toBe(tasks);
+    expect(tasks).toEqual(tasksCopy);
+  });
+  it("returns the empty list for an unknown/non-esisting key in items", () => {
+    // @ts-expect-error: intentionally passed an unknown key
+    const filteredTasks = filterBy(tasks, "priority", "low");
+    expect(filteredTasks).toEqual([]);
+  });
+  it("returns the empty list when the expected value is invalid", () => {
+    // @ts-expect-error: intentionally passed invalid value for the key
+    const filteredItems = filterBy(tasks, "status", "archived");
+    expect(filteredItems).toEqual([]);
   });
 });
