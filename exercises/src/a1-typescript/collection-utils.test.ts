@@ -210,17 +210,6 @@ describe("filterBy", () => {
 describe("countBy", () => {
   const tasks: Task[] = [
     {
-      id: "TS 01",
-      status: "done",
-      title: "Type Erasure in TS",
-    },
-    {
-      id: "TS 02",
-      status: "in_progress",
-      title: "Interface in TS",
-      assigneeId: "emp-03",
-    },
-    {
       id: "TS 03",
       status: "todo",
       title: "unknown type in TS",
@@ -236,17 +225,29 @@ describe("countBy", () => {
       title: "Readonly in TS",
       assigneeId: undefined,
     },
+    {
+      id: "TS 01",
+      status: "done",
+      title: "Type Erasure in TS",
+    },
+    {
+      id: "TS 02",
+      status: "in_progress",
+      title: "Interface in TS",
+      assigneeId: "emp-03",
+    },
   ];
   it("counts tasks grouped by status", () => {
     const result = countBy(tasks, "status");
     expect([...result]).toEqual([
+      ["todo", 3],
       ["done", 1],
       ["in_progress", 1],
-      ["todo", 3],
     ]);
   });
   it("returns an empty Map when given an empty list of items", () => {
-    const result = countBy([], "status");
+    const noTasks: Task[] = [];
+    const result = countBy(noTasks, "status");
     expect([...result]).toEqual([]);
   });
   it("doesn't mutate the input list of items", () => {
