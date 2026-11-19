@@ -25,7 +25,8 @@ export const countBy = <T, K extends keyof T>(
   key: K,
 ): Map<T[K], number> =>
   items.reduce((acc, current) => {
-    const count = acc.get(current[key]) ?? 0;
-    acc.set(current[key], count + 1);
+    const mapKey = current[key];
+    const count = acc.get(mapKey) ?? 0;
+    acc.set(mapKey, count + 1);
     return acc;
   }, new Map<T[K], number>());
