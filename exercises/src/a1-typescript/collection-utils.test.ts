@@ -190,7 +190,7 @@ describe("filterBy", () => {
     });
   });
   it("does not mutate input list and instead returns a new list", () => {
-    const tasksCopy = [...tasks];
+    const tasksCopy = structuredClone(tasks);
     const filteredTasks = filterBy(tasks, "status", "todo");
     expect(filteredTasks).not.toBe(tasks);
     expect(tasks).toEqual(tasksCopy);
@@ -251,7 +251,7 @@ describe("countBy", () => {
     expect([...result]).toEqual([]);
   });
   it("doesn't mutate the input list of items", () => {
-    const taskCopy = [...tasks];
+    const taskCopy = structuredClone(tasks);
     countBy(tasks, "status");
     expect(tasks).toEqual(taskCopy);
   });
